@@ -2,7 +2,6 @@ Rails.application.routes.draw do
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
   
-<<<<<<< HEAD
   root 'game#create'
   
   get 'game/board', to: 'game#board', as: 'board'
@@ -24,13 +23,10 @@ Rails.application.routes.draw do
   get "game/lose", to: "game#lose", as: "lose"
   
   get "game/message", to: "game#message", as: "message"
-=======
-  get '/board', to: 'game#board'
+
   
   resources :game
   
-  
->>>>>>> edbadf1237af4ed4114fb534d6216ea1a322270a
   # You can have the root of your site routed with "root"
   # root 'welcome#index'
 
