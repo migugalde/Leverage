@@ -21,6 +21,13 @@ Rails.application.routes.draw do
   get "game/lose", to: "game#lose", as: "lose"
   
   get "game/message", to: "game#message", as: "message"
+  
+  get "game/quiz", to: "game#quiz", as: "quiz"
+  
+  get "game/treasure_interaction", to: "game#treasure_interaction", as: "interaction"
+  
+  get "game/treasure_map", to: "game#treasure_map", as: "map"
+  "
 
   
   resources :game

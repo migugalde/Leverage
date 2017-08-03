@@ -17,4 +17,4 @@
 //= require panolens
 
 
-// $(function(){ $(document).foundation(); });
+//$(function(){ $(document).foundation(); });

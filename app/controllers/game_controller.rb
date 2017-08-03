@@ -39,5 +39,14 @@ class GameController < ApplicationController
   def lose
   end
   
+  def treasure_map
+  end
+  
+  def treasure_interaction
+  end
+  
+  def quiz
+  end
+  
   
 end
