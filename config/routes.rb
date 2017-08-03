@@ -12,8 +12,6 @@ Rails.application.routes.draw do
   
   get 'game/kingdom', to: 'game#kingdom', as: "kingdom"
   
-  get 'game/lose', to: 'game#lose', as: "lose"
-  
   get "game/night_shade", to: 'game#night_shade', as: "night_shade"
   
   get "game/play_turn", to: "game#play_turn", as: "play_turn"
