@@ -32,7 +32,6 @@ class GameController < ApplicationController
   def quiz
   end
   
-  
   #will most likely end up combining these two as a method and just redirecting render to a win/lose page
   def win
   end
