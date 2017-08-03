@@ -5,18 +5,16 @@
 
 :coffeescript
     $ ->
-        
-            
-        panorama = new (PANOLENS.ImagePanorama)('/cur.png')
+        panorama = new PANOLENS.ImagePanorama('/assets/bed2.jpg')
     
-        infospot = new (PANOLENS.Infospot)(500, PANOLENS.DataImage.Info)
-        infospot.position.set 0, -1000, -4000
-        infospot.addHoverText 'Control me with your Wand', 50
-        infospot.focus(3000)
+        #infospot = new PANOLENS.Infospot(500, PANOLENS.DataImage.Info)
+        #infospot.position.set 0, -1000, -4000
+        #infospot.addHoverText 'Control me with your Wand', 50
+        #infospot.focus(3000)
     
-        panorama.add infospot
+        #panorama.add infospot
         
-        viewer = new (PANOLENS.Viewer)(container: container)
+        viewer = new PANOLENS.Viewer()
         viewer.add panorama
     
         renderer = new (THREE.WebGLRenderer)
