@@ -1,75 +1,46 @@
-//should the above connect to mirror?
+:coffeescript
+    $ ->
+      
+      container = document.querySelector('#container')
+      panel = document.querySelector('#panel')
+      panorama = new (PANOLENS.ImagePanorama)('/assets/bed2.jpg')
+      infospot = new (PANOLENS.Infospot)(350, PANOLENS.DataImage.Info)
+      infospot.position.set 0, -2000, -5000
+      infospot.addHoverElement panel, 150
+      panorama.add infospot
+      viewer = new (PANOLENS.Viewer)(container: container)
+      viewer.add panorama
+      renderer = undefined
+      camera = undefined
+      scene = undefined
+      box = undefined
+      renderer = new (THREE.WebGLRenderer)
+      renderer.setClearColor 0xffffff
+      renderer.setSize panel.clientWidth, panel.clientHeight
+      camera = new (THREE.PerspectiveCamera)(45, panel.clientWidth / panel.clientHeight, 1, 2000)
+      scene = new (THREE.Scene)
+      console.log infospot.element
+      infospot.element.appendChild renderer.domElement
+      box = new (THREE.Mesh)(new (THREE.BoxGeometry)(10, 10, 10), new (THREE.MeshNormalMaterial))
+      box.position.z = -20
+      scene.add box
+      viewer.addUpdateCallback ->
+        renderer.render scene, camera
+        box.rotation.y += 0.03
+        return
+
 #container
     %h1#heading
         Welcome, Iris
-
-:coffeescript
-    $ ->
-        panorama = new PANOLENS.ImagePanorama('/assets/bed2.jpg')
-    
-        #infospot = new PANOLENS.Infospot(500, PANOLENS.DataImage.Info)
-        #infospot.position.set 0, -1000, -4000
-        #infospot.addHoverText 'Control me with your Wand', 50
-        #infospot.focus(3000)
-    
-        #panorama.add infospot
-        
-        viewer = new PANOLENS.Viewer()
-        viewer.add panorama
-    
-        renderer = new (THREE.WebGLRenderer)
-        renderer.setClearColor 0xffffff
-        idleBG = ->
-      colors = []
-      i = 0
-      while i < 3
-        colors[i] = Math.floor(Math.random() * 255)
-        i++
-      colors
-    
-    #Event handlers
-    $('li').on 'click', ->
-      picString = $(this).data('picture')
-      $('body').css 'background-image', 'url(' + picString + ')'
-      $('header').addClass 'hidden'
-      $('.menu').removeClass 'opened'
-      return
-    $('li').mouseenter ->
-      $(this).addClass 'opaque'
-      return
-    $('li').on 'mouseleave', ->
-      $(this).removeClass 'opaque'
-      return
-    $('.menu').on 'click', ->
-      $('header').toggleClass 'hidden'
-      $(this).toggleClass 'opened'
-      return
-    $ ->
-      picCount = $('li').length
-      totalWidth = $(window).width()
-      iconWidth = totalWidth / picCount - (35 * picCount)
-      $('nav li').css 'width', iconWidth + 'px'
-      return
-    $ ->
-      $(window).resize ->
-        picCount = $('li').length
-        totalWidth = $(window).width()
-        iconWidth = totalWidth / picCount - (35 * picCount)
-        $('nav li').css 'width', iconWidth + 'px'
-        return
-      return
-    $ ->
-      $(document).on 'mousemove', (event) ->
-        if $('header').hasClass('hidden')
-          shift = event.pageX * 1.6
-          $('body').css 'background-position', -shift
-        return
+#panel
         
 :scss
     $bg: desaturate(green, 20%);
-    html, body{ overflow: none;}
+    html, body{
+      width: 100%;
+      height: 100%;
+    }
     #wand{
-        
         height: 100%;
         width: 100%;
         overflow: none;
@@ -99,6 +70,11 @@
         flex-direction: column;
     }
     #container {
-        height: 100%;
-        width: 100%;
+      height: 100%;
+      width: 100%;
+    }
+    #panel {
+      width: 320px;
+      height: 240px;
+      background-color: #fff;  
     }
