@@ -1,5 +1,9 @@
 class GameController < ApplicationController
   
+  #landing page
+  def index
+  end
+  
   #when player initially instantiates a game
   def create
   end 
