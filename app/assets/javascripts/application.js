@@ -18,4 +18,4 @@
 //= require panolens.min
 
 
-$(function(){ $(document).foundation(); });
+//$(function(){ $(document).foundation(); });
