@@ -12,10 +12,9 @@
 //
 //= require jquery
 //= require jquery_ujs
-//= require turbolinks
-//= require_tree .
 //= require three.min
 //= require panolens.min
+//= require panolens
 
 
-$(function(){ $(document).foundation(); });
+// $(function(){ $(document).foundation(); });
