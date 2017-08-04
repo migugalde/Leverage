@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   
   root 'game#create'
   
+  
   get 'game/board', to: 'game#board', as: 'board'
   
   get 'game/join', to: 'game#join', as: "join"
@@ -28,6 +29,7 @@ Rails.application.routes.draw do
   
   get "game/treasure_map", to: "game#treasure_map", as: "map"
 
+  resources :colorrecognition
   
   resources :game
   
