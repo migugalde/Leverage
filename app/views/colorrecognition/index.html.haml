@@ -1,8 +1,11 @@
-.row.center-content
+.row.push-down
     %h3.white-text.left-indent Welcome, let's begin color recognition.
+.row.center-text
+    %img#imgParse{:src => "#", :width => "400px"}/
 .row.center-text.shiftDown
     .center-text.invis
-        %input{:accept => "image/*", :type => "file"}/
+        %form#form1{:runat => "server"}
+        %input#imgInp{:accept => "image/*", :type => "file"}/
     .button.wide.moveUp.mip.spotify Scan Kingdom
 .row.center-text
     %h7.white-text Make sure to select 'Take Photo'
@@ -15,3 +18,19 @@
     .shiftDown {
         margin-top: 100px;
     }
+:javascript
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            
+            reader.onload = function (e) {
+                $('#imgParse').attr('src', e.target.result);
+            }
+            
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+    
+    $("#imgInp").change(function(){
+        readURL(this);
+    });
