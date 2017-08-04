@@ -31,5 +31,45 @@
 
 .mip {
     pointer-events: none;
-    background: url('your_transparent.png');
+    z-index: 999;
+}
+
+.wide {
+    width:300px;
+}
+
+[type='file'] {
+    width: auto;
+}
+
+.spotify {
+    background-color: #444;
+    border-radius: 30px;
+    font-size: 1.3em;
+}
+
+.center-text {
+    text-align: center;
+}
+
+.moveUp {
+    margin-top: -50px;
+    // margin-left: -33px;
+    z-index: -1;
+}
+
+.placeUp {
+    pointer-events: none;
+    z-index: 999;
+}
+
+.abs {
+    position: fixed;
+}
+
+.middle {
+    margin-left: 200px;
+}
+.invis {
+    opacity: 0;
 }
