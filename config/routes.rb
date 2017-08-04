@@ -27,7 +27,6 @@ Rails.application.routes.draw do
   get "game/treasure_interaction", to: "game#treasure_interaction", as: "interaction"
   
   get "game/treasure_map", to: "game#treasure_map", as: "map"
-  "
 
   
   resources :game
