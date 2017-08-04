@@ -1,80 +1,20 @@
-:coffeescript
-    $ ->
-      
-      container = document.querySelector('#container')
-      panel = document.querySelector('#panel')
-      panorama = new (PANOLENS.ImagePanorama)('/assets/bed2.jpg')
-      infospot = new (PANOLENS.Infospot)(350, PANOLENS.DataImage.Info)
-      infospot.position.set 0, -2000, -5000
-      infospot.addHoverElement panel, 150
-      panorama.add infospot
-      viewer = new (PANOLENS.Viewer)(container: container)
-      viewer.add panorama
-      renderer = undefined
-      camera = undefined
-      scene = undefined
-      box = undefined
-      renderer = new (THREE.WebGLRenderer)
-      renderer.setClearColor 0xffffff
-      renderer.setSize panel.clientWidth, panel.clientHeight
-      camera = new (THREE.PerspectiveCamera)(45, panel.clientWidth / panel.clientHeight, 1, 2000)
-      scene = new (THREE.Scene)
-      console.log infospot.element
-      infospot.element.appendChild renderer.domElement
-      box = new (THREE.Mesh)(new (THREE.BoxGeometry)(10, 10, 10), new (THREE.MeshNormalMaterial))
-      box.position.z = -20
-      scene.add box
-      viewer.addUpdateCallback ->
-        renderer.render scene, camera
-        box.rotation.y += 0.03
-        return
+%img.gameBG{src: "/clickdummy/w5-0.jpg", width: "100%"}
 
-#container
-    %h1#heading
-        Welcome, Iris
-#panel
-        
-:scss
-    $bg: desaturate(green, 20%);
-    html, body{
-      width: 100%;
-      height: 100%;
-    }
-    #wand{
-        height: 100%;
-        width: 100%;
-        overflow: none;
-        color: white;
-        font-family: Arial, sans-serif;
-        font-size: 4em;
-        text-align: center;
-            
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
-    }
-    #heading {
-        text-shadow: -2px 0 black, 0 2px black, 2px 0 #929090, 0 -2px #929090;
-        position: absolute;
-        top: 200px;
-        left: 470px;
-        text-align: center;
-        font-size: 150%;
-        color: white;
-        font-family: Arial, sans-serif;
-        font-size: 4em;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
-    }
-    #container {
-      height: 100%;
-      width: 100%;
-    }
-    #panel {
-      width: 320px;
-      height: 240px;
-      background-color: #fff;  
-    }
+:coffeescript
+  $ ->
+    bg = $(".gameBG")[0]
+    $(document).click (event)->
+      if bg.src.includes("w5-0")
+        if event.offsetY < $(document).height()/2
+          console.log "Click upper half"
+          if event.offsetX < $(document).width()/2
+            console.log "Click upper half left"
+            bg.src = "/clickdummy/w5-m2.jpg"
+          else
+            console.log "Click upper half right"
+            bg.src = "/clickdummy/w5-m1.jpg"
+        else
+          console.log "Click lower half"
+          window.location.href = "play_turn"
+      else
+        bg.src = "/clickdummy/w5-0.jpg"

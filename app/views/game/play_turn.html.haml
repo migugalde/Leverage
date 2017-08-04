@@ -1,0 +1,10 @@
+%img{src: "/clickdummy/w6-0.jpg", width: "100%"}
+
+:coffeescript
+    $ ->
+        $(document).click (event)->
+            if event.offsetY < $(document).height()/2
+                console.log "Click upper half"
+            else
+                console.log "Click lower half"
+                window.location.href = "kingdom"

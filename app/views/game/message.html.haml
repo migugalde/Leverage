@@ -1,4 +1,4 @@
-%img.gameBG{src: "/clickdummy/w6-4-3.jpg", width: "100%"}
+%img.gameBG{src: "/clickdummy/w5-1.jpg", width: "100%"}
 
 :coffeescript
     $ ->
@@ -8,9 +8,9 @@
                 console.log "Click upper half"
             else
                 console.log "Click lower half"
-                if bg.src.includes("w6-4-3")
-                    bg.src = "/clickdummy/w6-4-4.jpg"
-                else if bg.src.includes("w6-4-4")
-                    bg.src = "/clickdummy/w5-0_end.jpg"
-                else
+                if bg.src.includes("w2")
+                    bg.src = "/clickdummy/w3.jpg"
+                else if bg.src.includes("w3")
+                    bg.src = "/clickdummy/w4.jpg"
+                else 
                     window.location.href = "board"
