@@ -3,35 +3,37 @@
       
       container = document.querySelector('#container')
       panel = document.querySelector('#panel')
-      panorama = new (PANOLENS.ImagePanorama)('/assets/bed2.jpg')
-      infospot = new (PANOLENS.Infospot)(350, PANOLENS.DataImage.Info)
+      panorama = new (PANOLENS.ImagePanorama)('/assets/ugh.jpg')
+      infospot = new (PANOLENS.Infospot)(1000, '/assets/closedchest.png')
       infospot.position.set 0, -2000, -5000
       infospot.addHoverElement panel, 150
+      infospot.addHoverText("IT'S A TRAP!")
+      infospot.lockHoverElement()
+      infospot.addEventListener 'click', ->
+        
+        
+        console.log("hi")
+        return
+
       panorama.add infospot
       viewer = new (PANOLENS.Viewer)(container: container)
       viewer.add panorama
-      renderer = undefined
-      camera = undefined
-      scene = undefined
-      box = undefined
-      renderer = new (THREE.WebGLRenderer)
-      renderer.setClearColor 0xffffff
+      
+      renderer = new THREE.WebGLRenderer( { alpha: true } )
+      renderer.setClearColor(0x000000, 0)
       renderer.setSize panel.clientWidth, panel.clientHeight
+      
+      console.log(panel.clientHeight)
+      console.log(panel.clientWidth)
       camera = new (THREE.PerspectiveCamera)(45, panel.clientWidth / panel.clientHeight, 1, 2000)
       scene = new (THREE.Scene)
-      console.log infospot.element
-      infospot.element.appendChild renderer.domElement
-      box = new (THREE.Mesh)(new (THREE.BoxGeometry)(10, 10, 10), new (THREE.MeshNormalMaterial))
-      box.position.z = -20
-      scene.add box
-      viewer.addUpdateCallback ->
-        renderer.render scene, camera
-        box.rotation.y += 0.03
-        return
 
+     
+      
+      
+      
 #container
-    %h1#heading
-        Welcome, Iris
+
 #panel
         
 :scss
@@ -74,7 +76,10 @@
       width: 100%;
     }
     #panel {
-      width: 320px;
-      height: 240px;
-      background-color: #fff;  
+      width: 400px;
+      height: 400px;
+      background-image: url("/assets/trap.gif");
+      color: white;
+      text-align: center;
     }
+    
