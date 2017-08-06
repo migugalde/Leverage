@@ -2,7 +2,9 @@ Rails.application.routes.draw do
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
   
-  root 'game#create'
+  root :to => redirect('game/create')
+  
+  get 'game/create', to: 'game#create', as: 'create'
   
   
   get 'game/board', to: 'game#board', as: 'board'
@@ -28,6 +30,12 @@ Rails.application.routes.draw do
   get "game/treasure_interaction", to: "game#treasure_interaction", as: "interaction"
   
   get "game/treasure_map", to: "game#treasure_map", as: "map"
+  
+  get "game/index", to: "game#index", as: "index"
+  
+  get "game/route14", to: "game#route14", as: "route14"
+  
+  get "game/route15", to: "game#route15", as: "route15"
 
   resources :colorrecognition
   
