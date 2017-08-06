@@ -2,6 +2,41 @@ Rails.application.routes.draw do
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
   
+  root :to => redirect('game/create')
+  
+  get 'game/create', to: 'game#create', as: 'create'
+  
+  get 'game/board', to: 'game#board', as: 'board'
+  
+  get 'game/join', to: 'game#join', as: "join"
+  
+  get 'game/start', to: 'game#start', as: "start"
+  
+  get 'game/kingdom', to: 'game#kingdom', as: "kingdom"
+  
+  get "game/night_shade", to: 'game#night_shade', as: "night_shade"
+  
+  get "game/play_turn", to: "game#play_turn", as: "play_turn"
+  
+  get "game/win", to: "game#win", as: "win"
+  
+  get "game/lose", to: "game#lose", as: "lose"
+  
+  get "game/message", to: "game#message", as: "message"
+  
+  get "game/quiz", to: "game#quiz", as: "quiz"
+  
+  get "game/treasure_interaction", to: "game#treasure_interaction", as: "interaction"
+  
+  get "game/treasure_map", to: "game#treasure_map", as: "map"
+  
+  get "game/index", to: "game#index", as: "index"
+  
+  get "game/route14", to: "game#route14", as: "route14"
+  
+  get "game/route15", to: "game#route15", as: "route15"
+
+  
   resources :game
   
   # You can have the root of your site routed with "root"

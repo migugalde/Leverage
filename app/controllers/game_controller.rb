@@ -1,5 +1,9 @@
 class GameController < ApplicationController
   
+  #landing page
+  def index
+  end
+  
   #when player initially instantiates a game
   def create
   end 
@@ -21,13 +25,12 @@ class GameController < ApplicationController
   end
   
   #clicking on your messages
-  def message
+  def messages
   end
   
   #will prob want to do this with ajax
   def quiz
   end
-  
   
   #will most likely end up combining these two as a method and just redirecting render to a win/lose page
   def win
@@ -36,5 +39,27 @@ class GameController < ApplicationController
   def lose
   end
   
+  def treasure_map
+  end
+  
+  def treasure_interaction
+  end
+  
+  def quiz
+  end
+  
+  #these following routes are superfluous (numerically names), they are souly for the purpose of our wireframe
+  
+  def route14
+  end
+  
+  def route15
+  end
+  
+  def night_shade
+  end
+  
+  def play_turn
+  end
   
 end
