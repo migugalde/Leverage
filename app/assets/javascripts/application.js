@@ -15,6 +15,7 @@
 //= require three.min
 //= require panolens.min
 //= require panolens
+//= require_tree .
 
 
 //$(function(){ $(document).foundation(); });

@@ -210,7 +210,127 @@
 	
 			loaded = true;
 			input_palette = mytransfer.gridacc_kmeans(palette_size); // This handles getting the palette
-								  console.log(input_palette);
+								  console.log(input_palette); // This is the solution.
+			
+			for(var i=1; i < palette_size+1; i++)
+			{
+				var txt = "rgb("+Math.round(input_palette[3*(i-1)]*255) + ", "+ Math.round(input_palette[3*(i-1)+1]*255) + ", "+ Math.round(input_palette[3*(i-1)+2]*255) + ")";
+				console.log(txt);
+				$("#color"+i).css("background-color", txt);
+			} // display the colors
+			
+			// Convert to HSL for thresholds
+			for(var i=1; i < palette_size+1; i++)
+			{
+				var R = input_palette[3*(i-1)];
+				var G = input_palette[(3*(i-1))+1];
+				var B = input_palette[(3*(i-1))+2];
+				
+				var maxInd = -1;
+				var minInd = -1;
+				
+				// $("#p"+i).text("COLOR: R - " + R + " G - " + G + " B - " + B);
+				
+				var min = 1;
+				var max = 0;
+				
+				if(R > max) {
+					max = R;
+					maxInd = 0;	
+				}
+				
+				if(G > max) {
+					max = G;
+					maxInd = 1;	
+				}
+				
+				if(B > max) {
+					max = B;
+					maxInd = 2;	
+				}
+					
+				if(R < min) {
+					min = R;
+					minInd = 0;
+				}
+				
+				if(G < min) {
+					min = G;
+					minInd = 1;	
+				}
+				
+				if(B < min) {
+					min = B;
+					minInd = 2;	
+				}
+					
+				// $("#p"+i).append("<p>MAX: "+ max + "  MIN: " + min + "</p>");
+				
+				var L = (max+min)/2;
+				
+				$("#p"+i).append("<p class='white-text'>L: "+ L + "</p>");
+				
+				var S = -1;
+				
+				if(L < 0.5) {
+					S = (max - min)/(max + min);
+				}
+				else {
+					S = (max-min)/(2.0 - max - min);
+				}
+				
+				$("#p"+i).append("<p class='white-text'>S: "+ S + "</p>");
+				
+				var H = 0;
+				
+				if(maxInd == 0) {
+					// H = (G - B)/(max - min)
+					H = (G-B)/(max - min);
+				} // Red is the maximum
+				
+				if(maxInd == 1) {
+					// H = 2 + (B - R)/(max - min);
+					H = 2 + (B - R)/(max - min);
+				} // Green is the maximum
+				
+				if(maxInd == 2) {
+					// H = 4 + (R - G)/(max - min);
+					H = 4 + (R - G)/(max - min);
+				} // Blue is the maximum
+				
+				H = H*60;
+				
+				if(H < 0)
+					H = H + 360;
+					
+				$("#p"+i).append("<p class='white-text'>H: "+ H + "</p>");
+				
+				if(S < 0.05)
+					$("#det"+i).text("Grey detected");
+				
+				if(S > 0.33)
+				{
+					// Green 90 - 140
+					if(H > 90 && H < 149)
+						$("#det"+i).text("Green detected");
+					// Blue 190 - 250
+					if(H > 190 && H < 250)
+						$("#det"+i).text("Blue detected");
+					// Pink 280 - 310
+					if(H > 280 && H < 310)
+						$("#det"+i).text("Pink detected");
+					// Orange 0 - 30
+					if(H > 0 && H < 30)
+						$("#det"+i).text("Orange detected");
+					// Purple 250 - 280
+					if(H > 250 && H < 280)
+						$("#det"+i).text("Purple detected");
+					
+				} // range we expect for the bright highlights
+				
+				
+			}
+			
 								  
 			IndexSortOrder = new Array(palette_size);
 			var input_L = new Array(palette_size);
@@ -218,6 +338,7 @@
 			{
 				IndexSortOrder[i] = i;
 				input_L[i] = mytransfer.RGB2LAB( [input_palette[3*i]*255, input_palette[3*i+1]*255, input_palette[3*i+2]*255] )[0];
+
 			}
 	
 			for(var i=0;	i < palette_size; i++ )
@@ -850,7 +971,25 @@
 .row.push-down
 	%h3.white-text.left-indent Welcome, let's begin color recognition.
 .row.center-text
-	%img#imgParse{:src => "#", :width => "400px"}/
+	.small-6.columns
+		#color1.square
+		#p1
+		%h3#det1.white-text
+		#color2.square
+		#p2
+		%h3#det2.white-text
+		#color3.square
+		#p3
+		%h3#det3.white-text
+		#color4.square
+		#p4
+		%h3#det4.white-text
+		#color5.square
+		%h3#det5.white-text
+		#p5
+	.small-6.columns
+		%img#imgParse{:src => "#", :width => "400px"}/
+		
 .row.center-text.shiftDown
 	.center-text.invis
 		%form#form1{:runat => "server"}
@@ -859,6 +998,8 @@
 .row.center-text
 	%h7.white-text Make sure to select 'Take Photo'
 .row
+	%input#select_but{:onclick => "SelectImage()", :style => "display:none;", :type => "button", :value => "Select Image"}/
+	
 	#output_palette{:style => "width: 200px; height: 300px; margin: 20px auto auto 65px; clear: both;"}
 		%input{:style => "width: 60px; height: 55px; margin-top: 2px; margin-right: 2px; background-color: rgb(240, 235, 235); color: rgb(240, 235, 235);"}/
 		%br/
@@ -946,6 +1087,7 @@
 			
 			reader.onload = function (e) {
 				$('#imgParse').attr('src', e.target.result);
+				getTransfer(reader.result);
 			}
 			
 			reader.readAsDataURL(input.files[0]);
