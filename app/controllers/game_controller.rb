@@ -25,7 +25,7 @@ class GameController < ApplicationController
   end
   
   #clicking on your messages
-  def message
+  def messages
   end
   
   #will prob want to do this with ajax
@@ -48,5 +48,18 @@ class GameController < ApplicationController
   def quiz
   end
   
+  #these following routes are superfluous (numerically names), they are souly for the purpose of our wireframe
+  
+  def route14
+  end
+  
+  def route15
+  end
+  
+  def night_shade
+  end
+  
+  def play_turn
+  end
   
 end
