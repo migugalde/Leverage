@@ -21,24 +21,66 @@
     color: white;
 }
 
-.center-content {
+.push-down {
     margin-top: 10%;
+}
+
+.center-content {
+    margin: 0 auto;
 }
 
 .left-indent {
     margin-left: 50px;
 }
 
-@font-face {
-    font-family: 'mononoki';
-    src: url('https://madmalik.github.io/mononoki/fonts/mononoki-Regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
-         url('https://madmalik.github.io/mononoki/fonts/mononoki-Regular.woff2') format('woff2'), /* Super Modern Browsers */
-         url('https://madmalik.github.io/mononoki/fonts/mononoki-Regular.woff') format('woff'), /* Pretty Modern Browsers */
-         url('https://madmalik.github.io/mononoki/fonts/mononoki-Regular.ttf')  format('truetype'); /* Safari, Android, iOS */
-    font-weight: normal;
-    font-style: normal;
+
+.mip {
+    pointer-events: none;
+    z-index: 999;
 }
 
-.ace_editor{
-    font-family: mononoki!important;
+.wide {
+    width:300px;
+}
+
+[type='file'] {
+    width: auto;
+}
+
+.spotify {
+    background-color: #444;
+    border-radius: 30px;
+    font-size: 1.3em;
+}
+
+.center-text {
+    text-align: center;
+}
+
+.moveUp {
+    margin-top: -50px;
+    // margin-left: -33px;
+    z-index: -1;
+}
+
+.placeUp {
+    pointer-events: none;
+    z-index: 999;
+}
+
+.abs {
+    position: fixed;
+}
+
+.middle {
+    margin-left: 200px;
+}
+.invis {
+    opacity: 0;
+}
+
+.square {
+    width: 100px;
+    height: 100px;
+    background-color: white;
 }
