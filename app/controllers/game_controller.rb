@@ -25,7 +25,7 @@ class GameController < ApplicationController
   end
   
   #clicking on your messages
-  def message
+  def messages
   end
   
   #will prob want to do this with ajax
@@ -54,6 +54,12 @@ class GameController < ApplicationController
   end
   
   def route15
+  end
+  
+  def night_shade
+  end
+  
+  def play_turn
   end
   
 end
