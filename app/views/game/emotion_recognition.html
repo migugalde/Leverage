@@ -9,12 +9,11 @@
 
 			body {
 				font-family: 'Lato';
-				background-color: white;
+				background-color: #f0f0f0;
 				margin: 0px auto;
+				max-width: 1150px;
 			}
-			#notif {
-				display: none;
-			}
+
 			#overlay {
 				position: absolute;
 				top: 0px;
@@ -25,13 +24,13 @@
 				-ms-filter : fliph; /*IE*/
 				filter : fliph; /*IE*/
 				filter: hue-rotate(80deg);
-				width : 1200px;
-				height : 900px;
-				display: none;
+				width : 600px;
+				height : 450px;
 			}
 			#emotion_chart {
 				filter: brightness(220%) hue-rotate(-10deg);
 			}
+
 			#videoel {
 				-o-transform : scaleX(-1);
 				-webkit-transform : scaleX(-1);
@@ -39,39 +38,21 @@
 				-ms-filter : fliph; /*IE*/
 				filter : fliph; /*IE*/
 
-				width : 1200px;
-				height : 900px;
+				width : 600px;
+				height : 450px;
 			}
 
 			#container {
 				position : relative;
-				width : 1200px;
-				margin : 0px auto;
-				z-index: -1;
-				padding-left: 3px;
-    			padding-top: 3px;
-			    padding-right: 3px;
-			}
-			
-			.blue-button {
-				background-color: deepskyblue;
-			    border: none;
-			    padding: 10px;
-			    font-size: 20px;
-			    padding-left: 30px;
-			    padding-right: 30px;
-			    color: white;
-			    letter-spacing: 2px;
-			    /*opacity: 0;*/
+				width : 370px;
+				/*margin : 0px auto;*/
 			}
 
 			#content {
-			/*	margin-top : 50px;
+				margin-top : 50px;
 				margin-left : auto;
 				margin-right : auto;
-				max-width: 600px;*/
-				margin-top: 3%;
-
+				max-width: 600px;
 			}
 
 			#sketch, #filter {
@@ -86,21 +67,13 @@
 				font-family: 'Lato';
 				font-size: 16px;
 			}
-			#parsing {
-				position: absolute;
-			    top: 0px;
-			    z-index: 10002;
-			    display: none;
-			}
+
 			#controls {
 				text-align : center;
-				opacity: 0.1;
 			}
 
 			#emotion_container {
 				width: 600px;
-				margin-top: -200px;
-				margin-left: 20%;
 			}
 
 			#emotion_icons {
@@ -115,22 +88,10 @@
 				/*margin-left : 13px;*/
 				margin-left : 35px;
 			}
-			.img_pulse {
-			    -webkit-animation: pulsate 2s ease-out;
-			    -webkit-animation-iteration-count: infinite; 
-			    opacity: 0.0
-			}
-			@-webkit-keyframes pulsate {
-			    0% {opacity: 0.0;}
-			    50% {opacity: 1.0;}
-			    100% {opacity: 0.0;}
-			}
-
 
 			#emotion_chart, #emotion_icons {
 				margin: 0 auto;
 				width : 400px;
-				opacity: 0;
 			}
 
 			#icon1, #icon2, #icon3, #icon4, #icon5, #icon6 {
@@ -141,78 +102,6 @@
 			.bar {
 				fill : steelblue;
 				fill-opacity : .9;
-			}
-			#text_status {
-			    color: white;
-			    top: 80px;
-			    position: fixed;
-			    font-weight: 900;
-			    letter-spacing: 2px;
-			    font-size: 20px;
-			    margin-left: -100px;
-			    opacity: 0.0;
-			    transition: all 0.2s ease-in-out;
-			}
-			#recording {
-				position: fixed;
-			    top: 80px;
-			    /* width: 30px; */
-			    right: 100px;
-			    opacity: 0.0;
-			    transition: all 0.2s ease-in-out;
-			}
-			.pulse {
-			  position: absolute;
-		      top: 15px;
-		      right: 15px;
-		      display: block;
-		      width: 30px;
-		      height: 30px;
-		      border-radius: 50%;
-		      background: #73C9E2;
-		      cursor: pointer;
-		      box-shadow: 0 0 0 rgba(115,201,226, 0.4);
-		      animation: pulse 2s infinite;
-		      z-index: 50;
-			}
-			.pulse:hover {
-			  animation: none;
-			}
-			
-			@-webkit-keyframes pulse {
-			  0% {
-			    -webkit-box-shadow: 0 0 0 0 rgba(115,201,226, 0.8);
-			    opacity: 0;
-			  }
-			  50% {
-			  	opacity: 1;
-			  }
-			  70% {
-			      -webkit-box-shadow: 0 0 0 10px rgba(115,201,226, 0);
-			  }
-			  100% {
-			      -webkit-box-shadow: 0 0 0 0 rgba(115,201,226, 0);
-			      opacity: 0;
-			  }
-			}
-			@keyframes pulse {
-			  0% {
-			    -moz-box-shadow: 0 0 0 0 rgba(115,201,226, 0.8);
-			    box-shadow: 0 0 0 0 rgba(115,201,226, 0.8);
-			    opacity: 0;
-			  }
-			  50% {
-			  	opacity: 1;
-			  }
-			  70% {
-			      -moz-box-shadow: 0 0 0 10px rgba(115,201,226,0);
-			      box-shadow: 0 0 0 10px rgba(115,201,226,0);
-			  }
-			  100% {
-			      -moz-box-shadow: 0 0 0 0 rgba(115,201,226, 0);
-			      box-shadow: 0 0 0 0 rgba(115,201,226, 0);
-			      opacity: 0;
-			  }
 			}
 
 		</style>
@@ -239,18 +128,17 @@
 		</script>
 	</head>
 	<body>
-		<!--<script src="./js/libs/utils.js"></script>-->
-		<!--<script src="../build/clmtrackr.js"></script>-->
-		<!--<script src="../models/model_pca_20_svm.js"></script>-->
-		<!--<script src="./js/libs/Stats.js"></script>-->
-		<!--<script src="./js/libs/d3.min.js"></script>-->
-		<!--<script src="./js/emotion_classifier.js"></script>-->
-		<!--<script src="./js/emotionmodel.js"></script>-->
-		<input type="file" accept="image/*">
+		<script src="./js/libs/utils.js"></script>
+		<script src="../build/clmtrackr.js"></script>
+		<script src="../models/model_pca_20_svm.js"></script>
+		<script src="./js/libs/Stats.js"></script>
+		<script src="./js/libs/d3.min.js"></script>
+		<script src="./js/emotion_classifier.js"></script>
+		<script src="./js/emotionmodel.js"></script>
 		<div id="content">
+			<h2>Emotion detection example</h2>
+			<p>This a test of emotion detection based on parameter output from <em>clmtrackr</em>.</p>
 			<div id="container">
-				<div id='parsing'><img src="./images/friendly-mirror.png" class="img_pulse" width="130px" style="margin-left:10px"/></div>
-				<span id="notif" class="pulse"></span>
 				<video id="videoel" width="400" height="300" preload="auto" loop>
 				</video>
 				<canvas id="overlay" width="400" height="300"></canvas>
@@ -263,80 +151,13 @@
 					<img class="emotion_icon" id="icon3" src="./media/icon_surprised.png">
 					<img class="emotion_icon" id="icon4" src="./media/icon_happy.png">
 				</div>
-				<div id='text_status'>&nbsp;</div>
 				<div id='emotion_chart'></div>
-				<div id='magic' onclick="recordVideo()">SMOOP</div>
-				<div id='recording'><img src="https://media.giphy.com/media/GBda3B7mNegvu/giphy.gif" style="width: 50px;"></div>
-				<a href="/"><div id="happy">NEXT PAGE</div></a>
 			</div>
 			<div id="controls">
-				<input class="blue-button" type="button" value="wait, loading video" disabled="disabled" onclick="startVideo()" id="startbutton"></input>
-				<!--<input class="blue-button" type="button" value="hide outline" onclick="hideVideo()" id="hidebutton"></input>-->
+				<input class="btn" type="button" value="wait, loading video" disabled="disabled" onclick="startVideo()" id="startbutton"></input>
 			</div>
+			<a href="https://github.com/auduno/clmtrackr"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_left_green_007200.png" alt="Fork me on GitHub"></a>
 			<script>
-			
-				var connection = new WebSocket('wss://mirrormirror-hhyder.c9users.io:8081');
-				console.log("STARING OFF");
-				var num_call = 0;
-				
-				// connection.onmessage = function(e) {
-				//   var json, on_page;
-				//   json = JSON.parse(e.data);
-				//   if (json.identity === "Mirror") {
-				//     on_page = $("h1").html();
-				//     if (on_page.indexOf("Hello Wand!") !== -1) {
-				//       $("h1").html(on_page + "!");
-				//     } else {
-				//       $("h1").html(json.message);
-				//     }
-				//     $("h3").html("from " + json.identity);
-				//   }
-				// };
-				
-				connection.onopen = function() {
-					console.log("CONNECTED");
-				};
-				
-				connection.onerror = function(error) {
-				  console.log('WebSocket Error ' + error);
-				};
-				
-				var count = 0;
-				
-				connection.sendHappy = function() {
-					if(!noHappyText) {
-						var status = document.getElementById("text_status");
-						var notif = document.getElementById("notif");
-						//status.innerHTML = "You look good! Would you like to make a recording for later?";
-						status.style.opacity = 1.0;
-						notif.style.display = 'block';
-					}
-					else {
-						var status = document.getElementById("text_status");
-						console.log(count);
-						if(count < 8) {
-							status.style.opacity = 0.0;
-							var recordBot = document.getElementById("recording");
-							recordBot.style.opacity = 1.0;
-						}
-						else {
-							var recordBot = document.getElementById("recording");
-							recordBot.style.opacity = 0.0;
-						}
-						count += 1;
-					}
-				  var request;
-				  request = {
-				    identity: "Mirror",
-				    message: "Looking Good!"
-				  };
-				  return connection.send(JSON.stringify(request));
-				};
-				
-				// $('button').click(function() {
-				//   connection.send2();
-				// });
-				
 				var vid = document.getElementById('videoel');
 				var overlay = document.getElementById('overlay');
 				var overlayCC = overlay.getContext('2d');
@@ -404,40 +225,13 @@
 				var ctrack = new clm.tracker({useWebGL : true});
 				ctrack.init(pModel);
 
-				var parseFlash = document.getElementById("parsing");
-				
 				function startVideo() {
 					// start video
 					vid.play();
 					// start tracking
 					ctrack.start(vid);
 					// start loop to draw face
-					parseFlash.style.display = "block";
 					drawLoop();
-				}
-				var noHappyText = false;
-				function recordVideo() {
-					var status = document.getElementById("text_status");
-					status.innerHTML = "Okay.";
-					status.style.opacity = 1.0;
-					noHappyText = true;
-				}
-				
-				function hideVideo() {
-					console.log("HIDE CLICKED!");
-					var result = overlay.style.display;
-					var emotIcons = document.getElementById('emotion_icons');
-					var emotChart = document.getElementById('emotion_chart');
-					if(result == "none") {
-						overlay.style.display = "block";
-						emotIcons.style.opacity = 1.0;
-						emotChart.style.opacity = 1.0;
-					}
-					else {
-						overlay.style.display = "none";
-						emotIcons.style.opacity = 0.0;
-						emotChart.style.opacity = 0.0;
-					}
 				}
 
 				function drawLoop() {
@@ -455,18 +249,6 @@
 						for (var i = 0;i < er.length;i++) {
 							if (er[i].value > 0.4) {
 								document.getElementById('icon'+(i+1)).style.visibility = 'visible';
-								if (i == 3) {
-									num_call += 1;
-									if (num_call >= 50){
-										num_call = 0;
-										console.log('TRIGGERED! - before');
-										setTimeout(function(){
-											connection.sendHappy();
-											num_call = 0;
-											console.log("TRIGGERED! - after");
-										},500);
-									}
-								}
 							} else {
 								document.getElementById('icon'+(i+1)).style.visibility = 'hidden';
 							}
@@ -560,7 +342,6 @@
 				stats = new Stats();
 				stats.domElement.style.position = 'absolute';
 				stats.domElement.style.top = '0px';
-				stats.domElement.style.display = 'none';
 				document.getElementById('container').appendChild( stats.domElement );
 
 				// update stats on every iteration

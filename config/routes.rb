@@ -2,12 +2,14 @@ Rails.application.routes.draw do
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
   
-  root :to => redirect('game/create')
+  root :to => redirect('game/join')
   
   get 'game/create', to: 'game#create', as: 'create'
   
   
   get 'game/board', to: 'game#board', as: 'board'
+  
+  get 'game/emotion_recognition', to: 'game#emotion_recognition', as: 'emotion'
   
   get 'game/join', to: 'game#join', as: "join"
   

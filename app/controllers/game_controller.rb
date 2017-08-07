@@ -62,4 +62,7 @@ class GameController < ApplicationController
   def play_turn
   end
   
+  def emotion_recognition
+  end
+  
 end
