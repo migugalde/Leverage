@@ -23,7 +23,7 @@ Rails.application.routes.draw do
   
   get "game/lose", to: "game#lose", as: "lose"
   
-  get "game/message", to: "game#message", as: "message"
+  get "game/messages", to: "game#messages", as: "messages"
   
   get "game/quiz", to: "game#quiz", as: "quiz"
   

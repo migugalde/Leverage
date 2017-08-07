@@ -1,0 +1,135 @@
+%section.content
+  %span.content-overflow
+    %span.content-after.primary
+  .inner
+    .content-text
+      %a.button{:href => "https://irisyon-finalproj-irisyon.c9users.io/game/route14"} Click on me
+
+:scss
+    body{
+      font-family: 'Open Sans', sans-serif;
+      overflow-x: hidden;
+    }
+    .overflow-hidden{
+      overflow: hidden;
+    }
+    
+    
+    p{
+      font-size: 18px;
+      line-height: 28px;
+      margin-bottom: 20px;
+      color: #fff;
+      text-align: center;
+    }
+    
+    .button{
+      padding: 10px 20px;
+      background: #fff;
+      border-radius: 2px;
+      margin: 50px 0;
+      color: #000;
+      text-decoration: none;
+      box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+      -webkit-transition: box-shadow 0.4s;
+      transition: box-shadow 0.4s;
+      display: inline-block;
+      position: relative;
+      left: 50%;
+      transform: translateX(-50%);
+      
+      &:hover{
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+      }
+    }
+    
+    //inner
+    .inner{
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
+      position: relative;
+      padding: 0 15px;
+    }
+    
+    //content
+    .content{
+      position: relative;
+    }
+    
+    .content-text{
+      position: relative;
+      padding-top: 20px;
+      max-width: 350px;
+      padding: 100px 0;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    
+    .content-overflow{
+      overflow: hidden;
+      height: 100%;
+      width: 100%;
+      position: absolute;
+      left: 0;
+      top: 0;
+
+      .content-after{
+        height: 300vw;
+        width: 150vw;
+        top: calc(0px - 75vw);
+        left: calc(50% - 75vw);
+        position: absolute;
+        display: block;
+        border-radius: 50%;
+        -webkit-transform: scale(2);
+        transform: scale(2);
+        
+        &.primary{
+          background: #6ab69a;
+          background-size: cover;
+        }
+       
+      }
+    }
+    
+    
+:coffeescript
+    $('.button').on 'click', (event) ->
+      event.preventDefault()
+      btn = @getAttribute('href')
+      tl = new TimelineMax(onComplete: ->
+        window.location.href = btn
+        return
+    )
+      content = @closest('.content')
+      $(content).addClass 'content-out-animation'
+      $('html').addClass 'overflow-hidden'
+      tl.fromTo '.content-out-animation .inner', 0.5, {
+        ease: Power4.easeOut
+        opacity: 1
+      },
+        ease: Power4.easeOut
+        opacity: 0
+      tl.to '.content-out-animation .content-after', 1,
+        ease: Power4.easeOut
+        scale: 0.1
+        top: '-62vw'
+      tl.fromTo '.content-out-animation .content-overflow', 0, {
+        ease: Power4.easeOut
+        overflow: 'hidden'
+      },
+        ease: Power4.easeOut
+        overflow: 'visible'
+      tl.to '.content-out-animation .content-after', 0,
+        ease: Power4.easeOut
+        zIndex: 40
+      tl.to '.content-out-animation .content-after', 1,
+        ease: Power4.easeOut
+        scale: 1
+      tl.to '.content-out-animation .content-after', 1, {
+        ease: Power4.easeOut
+        backgroundColor: '#6ab69a'
+      }, '-=0.75'
+      return
+    
