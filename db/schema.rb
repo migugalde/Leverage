@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170807040410) do
+ActiveRecord::Schema.define(version: 20170807040930) do
 
   create_table "games", force: :cascade do |t|
     t.string   "formula"
@@ -29,6 +29,7 @@ ActiveRecord::Schema.define(version: 20170807040410) do
     t.integer  "character"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean  "nightshade"
   end
 
 end
