@@ -11,12 +11,20 @@
   %label{:for => "view"}
 .banner
   #text SCAN KINGDOM
-.pic
+  %form#form1{:runat => "server"}
+  %input#imgInp{:accept => "image/*", :type => "file"}/
+%img#imgParse.pic{:src => "#", :width => "400px"}/
 
 
 
 
 :scss
+    #imgInp {
+        position: absolute;
+        margin-top: -90px;
+        font-size: 3em;
+        opacity: 0;
+    }
 
     @keyframes shakeIt {
       0% {
@@ -59,7 +67,7 @@
         font-size: 30px;
         outline: none;
         cursor: pointer;
-
+        pointer-events:none;
         padding: 8px;
         width: 70%;
         height: 50%;
@@ -98,14 +106,15 @@
 
     }
     .pic {
-        width: 255px;
-        height: 365px;
-        background: black;
-        opacity: .5;
+        width: 280px;
+        height: 390px;
+        // background: black;
+        // opacity: .5;
         position: absolute;
-        top: -245px;
-        left: 57px;
+        top: -255px;
+        left: 45px;
         z-index: 1;
+        // border:none;
     }
     
     .banner {
@@ -180,6 +189,25 @@
         
     }
    
-    
+:javascript
+  function readURL(input) {
+    if (input.files && input.files[0]) {
+      var reader = new FileReader();
+      
+      reader.onload = function (e) {
+      $('#imgParse').attr('src', e.target.result);
+      // $("#text").text("SCANNING");
+      $(".banner").css("display", "none");
+      $("#view").prop('checked', true);
+     // getTransfer(reader.result);
+    }
+		
+    reader.readAsDataURL(input.files[0]);
+    }
+  }
+
+  $("#imgInp").change(function(){
+    readURL(this);
+  });
 
    
