@@ -1,0 +1,574 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<title>Face tracker</title>
+		<meta charset="utf-8">
+		<link href="./styles/bootstrap.min.css" rel="stylesheet" type="text/css">
+		<style>
+			@import url(https://fonts.googleapis.com/css?family=Lato:300italic,700italic,300,700);
+
+			body {
+				font-family: 'Lato';
+				background-color: white;
+				margin: 0px auto;
+			}
+			#notif {
+				display: none;
+			}
+			#overlay {
+				position: absolute;
+				top: 0px;
+				left: 0px;
+				-o-transform : scaleX(-1);
+				-webkit-transform : scaleX(-1);
+				transform : scaleX(-1);
+				-ms-filter : fliph; /*IE*/
+				filter : fliph; /*IE*/
+				filter: hue-rotate(80deg);
+				width : 1200px;
+				height : 900px;
+				display: none;
+			}
+			#emotion_chart {
+				filter: brightness(220%) hue-rotate(-10deg);
+			}
+			#videoel {
+				-o-transform : scaleX(-1);
+				-webkit-transform : scaleX(-1);
+				transform : scaleX(-1);
+				-ms-filter : fliph; /*IE*/
+				filter : fliph; /*IE*/
+
+				width : 1200px;
+				height : 900px;
+			}
+
+			#container {
+				position : relative;
+				width : 1200px;
+				margin : 0px auto;
+				z-index: -1;
+				padding-left: 3px;
+    			padding-top: 3px;
+			    padding-right: 3px;
+			}
+			
+			.blue-button {
+				background-color: deepskyblue;
+			    border: none;
+			    padding: 10px;
+			    font-size: 20px;
+			    padding-left: 30px;
+			    padding-right: 30px;
+			    color: white;
+			    letter-spacing: 2px;
+			    /*opacity: 0;*/
+			}
+
+			#content {
+			/*	margin-top : 50px;
+				margin-left : auto;
+				margin-right : auto;
+				max-width: 600px;*/
+				margin-top: 3%;
+
+			}
+
+			#sketch, #filter {
+				display: none;
+			}
+
+			h2 {
+				font-weight : 400;
+			}
+
+			.btn {
+				font-family: 'Lato';
+				font-size: 16px;
+			}
+			#parsing {
+				position: absolute;
+			    top: 0px;
+			    z-index: 10002;
+			    display: none;
+			}
+			#controls {
+				text-align : center;
+				opacity: 0.1;
+			}
+
+			#emotion_container {
+				width: 600px;
+				margin-top: -200px;
+				margin-left: 20%;
+			}
+
+			#emotion_icons {
+				height: 50px;
+				padding-left: 40px;
+			}
+
+			.emotion_icon {
+				width : 40px;
+				height : 40px;
+				margin-top: 5px;
+				/*margin-left : 13px;*/
+				margin-left : 35px;
+			}
+			.img_pulse {
+			    -webkit-animation: pulsate 2s ease-out;
+			    -webkit-animation-iteration-count: infinite; 
+			    opacity: 0.0
+			}
+			@-webkit-keyframes pulsate {
+			    0% {opacity: 0.0;}
+			    50% {opacity: 1.0;}
+			    100% {opacity: 0.0;}
+			}
+
+
+			#emotion_chart, #emotion_icons {
+				margin: 0 auto;
+				width : 400px;
+				opacity: 0;
+			}
+
+			#icon1, #icon2, #icon3, #icon4, #icon5, #icon6 {
+				visibility : hidden;
+			}
+
+			/* d3 */
+			.bar {
+				fill : steelblue;
+				fill-opacity : .9;
+			}
+			#text_status {
+			    color: white;
+			    top: 80px;
+			    position: fixed;
+			    font-weight: 900;
+			    letter-spacing: 2px;
+			    font-size: 20px;
+			    margin-left: -100px;
+			    opacity: 0.0;
+			    transition: all 0.2s ease-in-out;
+			}
+			#recording {
+				position: fixed;
+			    top: 80px;
+			    /* width: 30px; */
+			    right: 100px;
+			    opacity: 0.0;
+			    transition: all 0.2s ease-in-out;
+			}
+			.pulse {
+			  position: absolute;
+		      top: 15px;
+		      right: 15px;
+		      display: block;
+		      width: 30px;
+		      height: 30px;
+		      border-radius: 50%;
+		      background: #73C9E2;
+		      cursor: pointer;
+		      box-shadow: 0 0 0 rgba(115,201,226, 0.4);
+		      animation: pulse 2s infinite;
+		      z-index: 50;
+			}
+			.pulse:hover {
+			  animation: none;
+			}
+			
+			@-webkit-keyframes pulse {
+			  0% {
+			    -webkit-box-shadow: 0 0 0 0 rgba(115,201,226, 0.8);
+			    opacity: 0;
+			  }
+			  50% {
+			  	opacity: 1;
+			  }
+			  70% {
+			      -webkit-box-shadow: 0 0 0 10px rgba(115,201,226, 0);
+			  }
+			  100% {
+			      -webkit-box-shadow: 0 0 0 0 rgba(115,201,226, 0);
+			      opacity: 0;
+			  }
+			}
+			@keyframes pulse {
+			  0% {
+			    -moz-box-shadow: 0 0 0 0 rgba(115,201,226, 0.8);
+			    box-shadow: 0 0 0 0 rgba(115,201,226, 0.8);
+			    opacity: 0;
+			  }
+			  50% {
+			  	opacity: 1;
+			  }
+			  70% {
+			      -moz-box-shadow: 0 0 0 10px rgba(115,201,226,0);
+			      box-shadow: 0 0 0 10px rgba(115,201,226,0);
+			  }
+			  100% {
+			      -moz-box-shadow: 0 0 0 0 rgba(115,201,226, 0);
+			      box-shadow: 0 0 0 0 rgba(115,201,226, 0);
+			      opacity: 0;
+			  }
+			}
+
+		</style>
+		<script>
+			// getUserMedia only works over https in Chrome 47+, so we redirect to https. Also notify user if running from file.
+			if (window.location.protocol == "file:") {
+				alert("You seem to be running this example directly from a file. Note that these examples only work when served from a server or localhost due to canvas cross-domain restrictions.");
+			} else if (window.location.hostname !== "localhost" && window.location.protocol !== "https:"){
+				window.location.protocol = "https";
+			}
+		</script>
+		<script type="text/javascript">
+
+			var _gaq = _gaq || [];
+			_gaq.push(['_setAccount', 'UA-32642923-1']);
+			_gaq.push(['_trackPageview']);
+
+			(function() {
+				var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+				ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+				var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+			})();
+
+		</script>
+	</head>
+	<body>
+		<!--<script src="./js/libs/utils.js"></script>-->
+		<!--<script src="../build/clmtrackr.js"></script>-->
+		<!--<script src="../models/model_pca_20_svm.js"></script>-->
+		<!--<script src="./js/libs/Stats.js"></script>-->
+		<!--<script src="./js/libs/d3.min.js"></script>-->
+		<!--<script src="./js/emotion_classifier.js"></script>-->
+		<!--<script src="./js/emotionmodel.js"></script>-->
+		<input type="file" accept="image/*">
+		<div id="content">
+			<div id="container">
+				<div id='parsing'><img src="./images/friendly-mirror.png" class="img_pulse" width="130px" style="margin-left:10px"/></div>
+				<span id="notif" class="pulse"></span>
+				<video id="videoel" width="400" height="300" preload="auto" loop>
+				</video>
+				<canvas id="overlay" width="400" height="300"></canvas>
+			</div>
+			<canvas id="sketch" width="400" height="300"></canvas>
+			<div id="emotion_container">
+				<div id="emotion_icons">
+					<img class="emotion_icon" id="icon1" src="./media/icon_angry.png">
+					<img class="emotion_icon" id="icon2" src="./media/icon_sad.png">
+					<img class="emotion_icon" id="icon3" src="./media/icon_surprised.png">
+					<img class="emotion_icon" id="icon4" src="./media/icon_happy.png">
+				</div>
+				<div id='text_status'>&nbsp;</div>
+				<div id='emotion_chart'></div>
+				<div id='magic' onclick="recordVideo()">SMOOP</div>
+				<div id='recording'><img src="https://media.giphy.com/media/GBda3B7mNegvu/giphy.gif" style="width: 50px;"></div>
+				<a href="/"><div id="happy">NEXT PAGE</div></a>
+			</div>
+			<div id="controls">
+				<input class="blue-button" type="button" value="wait, loading video" disabled="disabled" onclick="startVideo()" id="startbutton"></input>
+				<!--<input class="blue-button" type="button" value="hide outline" onclick="hideVideo()" id="hidebutton"></input>-->
+			</div>
+			<script>
+			
+				var connection = new WebSocket('wss://mirrormirror-hhyder.c9users.io:8081');
+				console.log("STARING OFF");
+				var num_call = 0;
+				
+				// connection.onmessage = function(e) {
+				//   var json, on_page;
+				//   json = JSON.parse(e.data);
+				//   if (json.identity === "Mirror") {
+				//     on_page = $("h1").html();
+				//     if (on_page.indexOf("Hello Wand!") !== -1) {
+				//       $("h1").html(on_page + "!");
+				//     } else {
+				//       $("h1").html(json.message);
+				//     }
+				//     $("h3").html("from " + json.identity);
+				//   }
+				// };
+				
+				connection.onopen = function() {
+					console.log("CONNECTED");
+				};
+				
+				connection.onerror = function(error) {
+				  console.log('WebSocket Error ' + error);
+				};
+				
+				var count = 0;
+				
+				connection.sendHappy = function() {
+					if(!noHappyText) {
+						var status = document.getElementById("text_status");
+						var notif = document.getElementById("notif");
+						//status.innerHTML = "You look good! Would you like to make a recording for later?";
+						status.style.opacity = 1.0;
+						notif.style.display = 'block';
+					}
+					else {
+						var status = document.getElementById("text_status");
+						console.log(count);
+						if(count < 8) {
+							status.style.opacity = 0.0;
+							var recordBot = document.getElementById("recording");
+							recordBot.style.opacity = 1.0;
+						}
+						else {
+							var recordBot = document.getElementById("recording");
+							recordBot.style.opacity = 0.0;
+						}
+						count += 1;
+					}
+				  var request;
+				  request = {
+				    identity: "Mirror",
+				    message: "Looking Good!"
+				  };
+				  return connection.send(JSON.stringify(request));
+				};
+				
+				// $('button').click(function() {
+				//   connection.send2();
+				// });
+				
+				var vid = document.getElementById('videoel');
+				var overlay = document.getElementById('overlay');
+				var overlayCC = overlay.getContext('2d');
+
+				/********** check and set up video/webcam **********/
+
+				function enablestart() {
+					var startbutton = document.getElementById('startbutton');
+					startbutton.value = "start";
+					startbutton.disabled = null;
+				}
+
+				/*var insertAltVideo = function(video) {
+					if (supports_video()) {
+						if (supports_ogg_theora_video()) {
+							video.src = "./media/cap12_edit.ogv";
+						} else if (supports_h264_baseline_video()) {
+							video.src = "./media/cap12_edit.mp4";
+						} else {
+							return false;
+						}
+						//video.play();
+						return true;
+					} else return false;
+				}*/
+				navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+				window.URL = window.URL || window.webkitURL || window.msURL || window.mozURL;
+
+				// check for camerasupport
+				if (navigator.getUserMedia) {
+					// set up stream
+
+					var videoSelector = {video : true};
+					if (window.navigator.appVersion.match(/Chrome\/(.*?) /)) {
+						var chromeVersion = parseInt(window.navigator.appVersion.match(/Chrome\/(\d+)\./)[1], 10);
+						if (chromeVersion < 20) {
+							videoSelector = "video";
+						}
+					};
+
+					navigator.getUserMedia(videoSelector, function( stream ) {
+						if (vid.mozCaptureStream) {
+							vid.mozSrcObject = stream;
+						} else {
+							vid.src = (window.URL && window.URL.createObjectURL(stream)) || stream;
+						}
+						vid.play();
+					}, function() {
+						//insertAltVideo(vid);
+						alert("There was some problem trying to fetch video from your webcam. If you have a webcam, please make sure to accept when the browser asks for access to your webcam.");
+					});
+				} else {
+					//insertAltVideo(vid);
+					alert("This demo depends on getUserMedia, which your browser does not seem to support. :(");
+				}
+
+				vid.addEventListener('canplay', enablestart, false);
+
+				/*********** setup of emotion detection *************/
+
+				// set eigenvector 9 and 11 to not be regularized. This is to better detect motion of the eyebrows
+				pModel.shapeModel.nonRegularizedVectors.push(9);
+				pModel.shapeModel.nonRegularizedVectors.push(11);
+
+				var ctrack = new clm.tracker({useWebGL : true});
+				ctrack.init(pModel);
+
+				var parseFlash = document.getElementById("parsing");
+				
+				function startVideo() {
+					// start video
+					vid.play();
+					// start tracking
+					ctrack.start(vid);
+					// start loop to draw face
+					parseFlash.style.display = "block";
+					drawLoop();
+				}
+				var noHappyText = false;
+				function recordVideo() {
+					var status = document.getElementById("text_status");
+					status.innerHTML = "Okay.";
+					status.style.opacity = 1.0;
+					noHappyText = true;
+				}
+				
+				function hideVideo() {
+					console.log("HIDE CLICKED!");
+					var result = overlay.style.display;
+					var emotIcons = document.getElementById('emotion_icons');
+					var emotChart = document.getElementById('emotion_chart');
+					if(result == "none") {
+						overlay.style.display = "block";
+						emotIcons.style.opacity = 1.0;
+						emotChart.style.opacity = 1.0;
+					}
+					else {
+						overlay.style.display = "none";
+						emotIcons.style.opacity = 0.0;
+						emotChart.style.opacity = 0.0;
+					}
+				}
+
+				function drawLoop() {
+					requestAnimFrame(drawLoop);
+					overlayCC.clearRect(0, 0, 400, 300);
+					//psrElement.innerHTML = "score :" + ctrack.getScore().toFixed(4);
+					if (ctrack.getCurrentPosition()) {
+						ctrack.draw(overlay);
+					}
+					var cp = ctrack.getCurrentParameters();
+
+					var er = ec.meanPredict(cp);
+					if (er) {
+						updateData(er);
+						for (var i = 0;i < er.length;i++) {
+							if (er[i].value > 0.4) {
+								document.getElementById('icon'+(i+1)).style.visibility = 'visible';
+								if (i == 3) {
+									num_call += 1;
+									if (num_call >= 50){
+										num_call = 0;
+										console.log('TRIGGERED! - before');
+										setTimeout(function(){
+											connection.sendHappy();
+											num_call = 0;
+											console.log("TRIGGERED! - after");
+										},500);
+									}
+								}
+							} else {
+								document.getElementById('icon'+(i+1)).style.visibility = 'hidden';
+							}
+						}
+					}
+				}
+
+				delete emotionModel['disgusted'];
+				delete emotionModel['fear'];
+				var ec = new emotionClassifier();
+				ec.init(emotionModel);
+				var emotionData = ec.getBlank();
+
+				/************ d3 code for barchart *****************/
+
+				var margin = {top : 20, right : 20, bottom : 10, left : 40},
+					width = 400 - margin.left - margin.right,
+					height = 100 - margin.top - margin.bottom;
+
+				var barWidth = 30;
+
+				var formatPercent = d3.format(".0%");
+
+				var x = d3.scale.linear()
+					.domain([0, ec.getEmotions().length]).range([margin.left, width+margin.left]);
+
+				var y = d3.scale.linear()
+					.domain([0,1]).range([0, height]);
+
+				var svg = d3.select("#emotion_chart").append("svg")
+					.attr("width", width + margin.left + margin.right)
+					.attr("height", height + margin.top + margin.bottom)
+
+				svg.selectAll("rect").
+					data(emotionData).
+					enter().
+					append("svg:rect").
+					attr("x", function(datum, index) { return x(index); }).
+					attr("y", function(datum) { return height - y(datum.value); }).
+					attr("height", function(datum) { return y(datum.value); }).
+					attr("width", barWidth).
+					attr("fill", "#2d578b");
+
+				svg.selectAll("text.labels").
+					data(emotionData).
+					enter().
+					append("svg:text").
+					attr("x", function(datum, index) { return x(index) + barWidth; }).
+					attr("y", function(datum) { return height - y(datum.value); }).
+					attr("dx", -barWidth/2).
+					attr("dy", "1.2em").
+					attr("text-anchor", "middle").
+					text(function(datum) { return datum.value;}).
+					attr("fill", "white").
+					attr("class", "labels");
+
+				svg.selectAll("text.yAxis").
+					data(emotionData).
+					enter().append("svg:text").
+					attr("x", function(datum, index) { return x(index) + barWidth; }).
+					attr("y", height).
+					attr("dx", -barWidth/2).
+					attr("text-anchor", "middle").
+					attr("style", "font-size: 12").
+					text(function(datum) { return datum.emotion;}).
+					attr("transform", "translate(0, 18)").
+					attr("class", "yAxis");
+
+				function updateData(data) {
+					// update
+					var rects = svg.selectAll("rect")
+						.data(data)
+						.attr("y", function(datum) { return height - y(datum.value); })
+						.attr("height", function(datum) { return y(datum.value); });
+					var texts = svg.selectAll("text.labels")
+						.data(data)
+						.attr("y", function(datum) { return height - y(datum.value); })
+						.text(function(datum) { return datum.value.toFixed(1);});
+
+					// enter
+					rects.enter().append("svg:rect");
+					texts.enter().append("svg:text");
+
+					// exit
+					rects.exit().remove();
+					texts.exit().remove();
+				}
+
+				/******** stats ********/
+
+				stats = new Stats();
+				stats.domElement.style.position = 'absolute';
+				stats.domElement.style.top = '0px';
+				stats.domElement.style.display = 'none';
+				document.getElementById('container').appendChild( stats.domElement );
+
+				// update stats on every iteration
+				document.addEventListener('clmtrackrIteration', function(event) {
+					stats.update();
+				}, false);
+
+			</script>
+		</div>
+	</body>
+</html>
