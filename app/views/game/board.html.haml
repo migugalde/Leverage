@@ -18,7 +18,7 @@
       panorama.add infospot
       viewer = new (PANOLENS.Viewer)(container: container)
       viewer.add panorama
-      
+      viewer.enableControl(1);
       renderer = new THREE.WebGLRenderer( { alpha: true } )
       renderer.setClearColor(0x000000, 0)
       renderer.setSize panel.clientWidth, panel.clientHeight
