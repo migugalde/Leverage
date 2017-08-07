@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  formula: MyString
+  resources: MyString
+  numUsers: 1
+  currUser: 1
+  chests: MyString
+
+two:
+  formula: MyString
+  resources: MyString
+  numUsers: 1
+  currUser: 1
+  chests: MyString
