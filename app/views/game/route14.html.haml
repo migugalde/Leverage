@@ -53,12 +53,15 @@
           dataURL
           
         sendImage = ->
-          img = getBase64Image(document.getElementById('image'))
+          img = getBase64Image(document.getElementById('imgParse'))
           JSONimg = 
             'type': 'img'
             'data': img
-          ws.send JSON.stringify(JSONimg)
+          connection.send JSON.stringify(JSONimg)
           return
+          
+        $(document).click ->
+          sendImage()
 
 
 :scss
