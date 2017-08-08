@@ -5,6 +5,7 @@
     %h3#p1 a; 000; Yes
     %h3#p2 b; 000; No
     %h3#p3 c; 000; No
+    %button#startGame Start Game
 
 
 :coffeescript
@@ -17,8 +18,6 @@
     socket = new WebSocket('wss://finalproject-wiesn.c9users.io:8081')
     $ ->
         console.log "WEBSOCKET SET-UP"
-        
-        
         
         socket.onopen = ->
             console.log "Connection opened"
@@ -129,6 +128,9 @@
                 turn_array[2] = 0 
                 turn_array[0] = 1
                 socket.send2("server", id_array[0], "turn_start", "")
+                
+        $("#startGame").click ->
+            socket.send2("server", id_array[0], "turn_start", "")
 
     
 :scss
