@@ -6,6 +6,33 @@
 	
 	ga('create', 'UA-9155031-2', 'auto');
 	ga('send', 'pageview');
+	
+:coffeescript
+    $ ->
+        connection = new WebSocket('wss://cool-media-rpranav.c9users.io:8081')
+        # When the connection is open, send some data to the server
+
+        connection.onopen = ->
+            console.log 'Mirror connected!'
+            return
+        
+        # Log errors
+        
+        connection.onerror = (error) ->
+            console.log 'WebSocket Error ' + error
+            return
+        
+        # Log messages from the server
+        
+        onMessage = (evt) ->
+          console.log "Ping!"
+		  msg = JSON.parse(evt.data)
+		  if msg['type'] == 'img'
+		    console.log "Image Received!"
+		    $('#imgParse').attr 'src', msg['data']
+		  return	
+	
+	
 :javascript
 	// for display UI
 	var input_width		= '60px';

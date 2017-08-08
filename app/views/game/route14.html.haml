@@ -15,7 +15,50 @@
   %input#imgInp{:accept => "image/*", :type => "file"}/
 %img#imgParse.pic{:src => "#", :width => "400px"}/
 
+:coffeescript
+    $ ->
+        connection = new WebSocket('wss://cool-media-rpranav.c9users.io:8081')
+        # When the connection is open, send some data to the server
 
+        connection.onopen = ->
+            console.log 'Wizard Connected'
+            return
+        
+        # Log errors
+        
+        connection.onerror = (error) ->
+            console.log 'WebSocket Error ' + error
+            return
+        
+        # Log messages from the server
+        
+        connection.onmessage = (e) ->
+            console.log "Pinging!"
+            message = JSON.parse(e.data)
+            console.log 'Message type: ' + message.type
+            
+        getBase64Image = (img) ->
+          # Create an empty canvas element
+          canvas = document.createElement('canvas')
+          canvas.width = img.width
+          canvas.height = img.height
+          # Copy the image contents to the canvas
+          ctx = canvas.getContext('2d')
+          ctx.drawImage img, 0, 0
+          # Get the data-URL formatted image
+          # Firefox supports PNG and JPEG. You could check img.src to guess the
+          # original format, but be aware the using "image/jpg" will re-encode the image.
+          imgToSend = $("#imgParse").src
+          dataURL = canvas.toDataURL(imgToSend)
+          dataURL
+          
+        sendImage = ->
+          img = getBase64Image(document.getElementById('image'))
+          JSONimg = 
+            'type': 'img'
+            'data': img
+          ws.send JSON.stringify(JSONimg)
+          return
 
 
 :scss
