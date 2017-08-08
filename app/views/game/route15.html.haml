@@ -1,0 +1,91 @@
+:coffeescript
+    $ ->
+        console.log "WEBSOCKET SET-UP"
+        
+        socket = new WebSocket('wss://irisyon-finalproj-irisyon.c9users.io:8081');
+        
+        socket.onopen = ->
+            console.log "Connection opened"
+            socket.send("Ping")
+            return
+        socket.onerror = (error) ->
+            console.log "WebSocket Error " + error
+            return
+        socket.send2 = (iClient, iReceiver, iMove, iText) ->
+            communication =
+                senderID: iClient
+                receiverID: iReceiver
+                move: iMove     
+                    # Idea: Type of message
+                    # Options: message, turn_start, turn_end, kingdom_scan, ?
+                text: iText     
+                    # Idea: Content of message
+                    # Options: Text as string, for kingdom_scan it would be the image data
+            socket.send JSON.stringify(communication)
+            console.log "Sent: " + JSON.stringify(communication)
+            return
+
+        socket.onmessage = (e) ->
+            console.log "Received: " + e.data
+            if e.data.includes("senderID")
+                communication = JSON.parse(e.data)
+                if communication.receiverID == "server"
+                    if communication.move == "kingdom_scan"
+                        output_text = communication.move + " " + communication.text
+                    else
+                        output_text = communication.move
+                else
+                    output_text = communication.text
+                $("#outputString").html("Output to " + communication.receiverID + ": " + output_text)
+            return 
+            
+            
+        $("#kngdm2").click ->
+            socket.send2("player1", "player2", "message", "I think Susan is the nightshadow!!")
+            return
+        $("#kngdm3").click ->
+            socket.send2("player1", "player3", "message", "I think Tom is the nightshadow!!")
+            return
+        $("#kngdm4").click ->
+            socket.send2("player1", "player4", "message", "I think James is the nightshadow!!")
+            return
+        $("#imgscan").click ->
+            socket.send2("player1", "server", "kingdom_scan", "<< image data here >>")
+            return
+        $("#startturn").click ->
+            socket.send2("player1", "server", "turn_start", "")
+            return
+        $("#endturn").click ->
+            socket.send2("player1", "server", "turn_end", "")
+            return
+
+#wand
+    %h2 Websocket-Test: You are player 1!
+    %button#startturn Start Move
+    %button#imgscan Scan Image
+    %button#kngdm2 Send Message to player 2
+    %button#kngdm3 Send Message to player 3
+    %button#kngdm4 Send Message to player 4
+    %button#endturn End Move
+    %h2#outputString ...
+
+    
+:scss
+    $bg: desaturate(green, 20%);
+    html, body{ overflow: none;}
+    #wand{
+        height: 100%;
+        width: 100%;
+        overflow: none;
+        color: white;
+        font-family: Arial, sans-serif;
+        font-size: 2em;
+        text-align: center;
+            
+        background: $bg;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+    

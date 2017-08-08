@@ -1,0 +1,64 @@
+!!!
+%html
+  %head
+    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+    %link{:href => "//fonts.googleapis.com/css?family=Pirata+One", :rel=> "stylesheet", :type => "text/css"}/
+
+  %container
+    .row
+      %h1 ..
+    .row
+      %h2#text_content.text-center ...
+
+:coffeescript
+  $ ->
+        console.log "WEBSOCKET SET-UP"
+        
+        socket = new WebSocket('wss://irisyon-finalproj-irisyon.c9users.io:8081');
+        
+        socket.onopen = ->
+            console.log "Connection opened"
+            socket.send("Ping")
+            return
+        socket.onerror = (error) ->
+            console.log "WebSocket Error " + error
+            return
+        socket.send2 = (iClient, iReceiver, iMove, iText) ->
+            communication =
+                senderID: iClient
+                receiverID: iReceiver
+                move: iMove     
+                    # Idea: Type of message
+                    # Options: message, turn_start, turn_end, kingdom_scan, ?
+                text: iText     
+                    # Idea: Content of message
+                    # Options: Text as string, for kingdom_scan it would be the image data
+            socket.send JSON.stringify(communication)
+            console.log "Sent: " + JSON.stringify(communication)
+            return
+
+        socket.onmessage = (e) ->
+            console.log "Received: " + e.data
+            if e.data.includes("senderID")
+                communication = JSON.parse(e.data)
+                console.log "Message from " + communication.senderID
+                if communication.receiverID == "player2"
+                  $("#text_content").html(communication.text)
+            return 
+
+
+:scss
+    body {
+        margin: 0;
+        padding: 0;
+        background-image: url("/assets/inbox.png");
+        background-position: 0px -30px;
+        color: white;
+        font-family: 'Tangerine', serif;
+        background-repeat: no-repeat;
+        background-size: cover;
+        position: relative;
+        top: -30px;
+    }
+    
+  

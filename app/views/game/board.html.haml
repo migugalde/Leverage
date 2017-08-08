@@ -1,5 +1,47 @@
 :coffeescript
+    thisID = 0
     $ ->
+      
+      console.log "WEBSOCKET SET-UP"
+        
+      socket = new WebSocket('wss://irisyon-finalproj-irisyon.c9users.io:8081')
+        
+      socket.onopen = ->
+        console.log "Connection opened"
+        socket.send("Ping")
+        return
+      socket.onerror = (error) ->
+        console.log "WebSocket Error " + error
+        return
+      socket.send2 = (iClient, iReceiver, iMove, iText) ->
+        communication =
+          senderID: iClient
+          receiverID: iReceiver
+          move: iMove     
+            # Idea: Type of message
+            # Options: message, turn_start, turn_end, kingdom_scan, ?
+          text: iText     
+            # Idea: Content of message
+            # Options: Text as string, for kingdom_scan it would be the image data
+        socket.send JSON.stringify(communication)
+        console.log "Sent: " + JSON.stringify(communication)
+        return
+
+      socket.onmessage = (e) ->
+        console.log "Received: " + e.data
+        if e.data.includes("deviceID") and thisID == 0
+          communication = JSON.parse(e.data)
+          thisID = communication.deviceID
+          console.log "New device has received ID: " + thisID
+        else if e.data.includes("senderID")
+          communication = JSON.parse(e.data)
+          console.log "Message from " + communication.senderID
+          if communication.senderID == "server" and communication.move == "id_check"
+            socket.send2(thisID, "server", "id_check", thisID)
+          return 
+      
+      
+      
       
       container = document.querySelector('#container')
       panel = document.querySelector('#panel')
@@ -28,11 +70,15 @@
       camera = new (THREE.PerspectiveCamera)(45, panel.clientWidth / panel.clientHeight, 1, 2000)
       scene = new (THREE.Scene)
 
-     
+      $("#btn_end").click ->
+        socket.send2(thisID, "server", "turn_end", "")
+        window.location.href = "/game/win";
+        
       
       
       
 #container
+%button#btn_end End Turn
 
 #panel
         

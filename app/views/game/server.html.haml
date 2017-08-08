@@ -1,0 +1,152 @@
+%body
+    %h1 Network information
+    %h3 Player; ID; Turn
+    %h3#serv server; 000; n/a
+    %h3#p1 a; 000; Yes
+    %h3#p2 b; 000; No
+    %h3#p3 c; 000; No
+
+
+:coffeescript
+    id_check_active = false
+    id_check_missing_posResp = 0
+    id_checked = [0,0,0]
+    id_array = ["000","000","000"]
+    turn_array = [1,0,0]
+    newIDreplace = 0
+    $ ->
+        console.log "WEBSOCKET SET-UP"
+        
+        socket = new WebSocket('wss://irisyon-finalproj-irisyon.c9users.io:8081')
+        
+        socket.onopen = ->
+            console.log "Connection opened"
+            socket.send("Ping")
+            return
+        socket.onerror = (error) ->
+            console.log "WebSocket Error " + error
+            return
+        socket.send2 = (iClient, iReceiver, iMove, iText) ->
+            communication =
+                senderID: iClient
+                receiverID: iReceiver
+                move: iMove     
+                    # Idea: Type of message
+                    # Options: message, turn_start, turn_end, kingdom_scan, id_check, ?
+                text: iText     
+                    # Idea: Content of message
+                    # Options: Text as string, for kingdom_scan it would be the image data
+            socket.send JSON.stringify(communication)
+            console.log "Sent: " + JSON.stringify(communication)
+            return
+
+        socket.onmessage = (e) ->
+            console.log "Received: " + e.data
+            if e.data.includes("deviceID")
+                communication = JSON.parse(e.data)
+                idUpdate("000", communication.deviceID)
+            
+            if e.data.includes("senderID")
+                communication = JSON.parse(e.data)
+                if communication.move == "id_check"
+                    if id_check_missing_posResp > 1
+                        idCheck(communication)
+                
+                else if communication.move == "turn_end"
+                    turnUpdate(communication.senderID)
+                    
+                
+                else if communication.receiverID == "server"
+                    if communication.move == "kingdom_scan"
+                        output_text = communication.move + " " + communication.text
+                    else
+                        output_text = communication.move
+                else
+                    output_text = communication.text
+                $("#outputString").html("Output to " + communication.receiverID + ": " + output_text)
+            return 
+        
+        idUpdate = (oldID, newID)->
+            if $("#serv").html().includes(oldID)
+                $("#serv").html($("#serv").html().replace(oldID, newID))
+            else if $("#p1").html().includes(oldID)
+                $("#p1").html($("#p1").html().replace(oldID, newID))
+                id_array[0] = newID
+            else if $("#p2").html().includes(oldID)
+                $("#p2").html($("#p2").html().replace(oldID, newID))
+                id_array[1] = newID
+            else if $("#p3").html().includes(oldID)
+                $("#p3").html($("#p3").html().replace(oldID, newID)) 
+                id_array[2] = newID
+            else if oldID == "000"
+                newIDreplace = newID
+                idCheck_Start()
+          
+        idCheck_Start = ()->    
+            socket.send2("server", "all", "id_check")
+            id_check_active = true
+            id_check_missing_posResp = 3
+            
+        idCheck = (message)->
+            if $("#p1").html().includes(message.text)
+                id_checked[0] = 1
+                id_check_missing_posResp = id_check_missing_posResp - 1
+            else if $("#p2").html().includes(message.text)
+                id_checked[1] = 1
+                id_check_missing_posResp = id_check_missing_posResp - 1
+            else if $("#p3").html().includes(message.text)
+                id_checked[2] = 1
+                id_check_missing_posResp = id_check_missing_posResp - 1
+            if id_check_missing_posResp == 1
+                idCheck_End()
+                
+        idCheck_End = ()->
+            changed_player = id_checked.indexOf(0)
+            idUpdate(id_array[changed_player], newIDreplace)
+            id_check_active = false
+            id_checked = [0,0,0]
+        
+        turnUpdate = (senderID)->
+            changed_player = turn_array.indexOf(1)
+            console.log "Player " + (changed_player+1) + " ends his/her turn."
+            if changed_player == 0
+                $("#p1").html($("#p1").html().replace("Yes", "No"))
+                $("#p2").html($("#p2").html().replace("No", "Yes"))
+                turn_array[0] = 0 
+                turn_array[1] = 1
+                socket.send2("server", id_array[1], "turn_start", "")
+            else if changed_player == 1
+                $("#p2").html($("#p2").html().replace("Yes", "No"))
+                $("#p3").html($("#p3").html().replace("No", "Yes"))
+                turn_array[1] = 0 
+                turn_array[2] = 1
+                socket.send2("server", id_array[2], "turn_start", "")
+            else if changed_player == 2
+                $("#p3").html($("#p3").html().replace("Yes", "No"))
+                $("#p1").html($("#p1").html().replace("No", "Yes"))
+                turn_array[2] = 0 
+                turn_array[0] = 1
+                socket.send2("server", id_array[0], "turn_start", "")
+
+    
+:scss
+    $bg: desaturate(green, 10%);
+    html, body{ overflow: none;}
+    #network{
+        height: 100%;
+        width: 100%;
+        overflow: none;
+        color: white;
+        font-family: Arial, sans-serif;
+        font-size: 2em;
+        text-align: center;
+            
+        background: $bg;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+    .margin{
+        margin: auto;
+    }

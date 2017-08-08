@@ -1,0 +1,65 @@
+
+#container
+    #bg
+
+!!!
+%html
+    %head
+        %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+        %link{:href => "//fonts.googleapis.com/css?family=Pirata+One", :rel=> "stylesheet", :type => "text/css"}/
+
+:css
+    html, body{
+      width: 100%;
+      height: 100%;
+      font-family: 'Tangerine', serif;
+      font-size: 48px;
+      
+    }
+    #container {
+      height: 100%;
+      width: 100%;
+    }
+    #bg {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background-image: url("/assets/back3.png");
+        background-position: 0px -25px;
+        background-repeat: no-repeat;
+        background-size: cover;
+
+    }
+   
+
+:coffeescript
+    $ ->
+      container = document.querySelector('#container')
+      panel = document.querySelector('#panel')
+      panorama = new (PANOLENS.ImagePanorama)('/assets/back.png')
+      
+      infospot = new (PANOLENS.Infospot)(1000, '/assets/closedchest.png')
+      infospot.position.set 0, -2000, -5000
+      infospot.addHoverElement panel, 150
+      infospot.addHoverText("IT'S A TRAP!")
+      infospot.lockHoverElement()
+      infospot.addEventListener 'click', ->
+        
+        
+        console.log("hi")
+        return
+
+      panorama.add infospot
+      
+      viewer = new (PANOLENS.Viewer)(container: container)
+      viewer.add panorama
+      viewer.enableControl(1);
+      
+
+      camera = new (THREE.PerspectiveCamera)(45, 1, 1, 2000)
+      scene = new (THREE.Scene)
+
+     
+      
+      
+    

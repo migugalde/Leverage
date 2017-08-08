@@ -1,0 +1,163 @@
+!!!
+%html
+  %head
+    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+    %link{:href => "//fonts.googleapis.com/css?family=Pirata+One", :rel=> "stylesheet", :type => "text/css"}/
+ 
+.frame
+  %input#cb.cb{:name => "cb", :type => "checkbox"}/
+  %label.button{:for => "cb"}
+    %span.front send
+    %span.back done
+
+.container
+  .row 
+    %h2 ..
+  .row
+    %form{"accept-charset" => "UTF-8", :action => "/game/messages", :method => "get"}
+      %label{:for => "message"}
+      %input#message_content{:name => "message_content", :placeholder => "message here", :type => "text"}/
+      %input{:name => "commit", :type => "submit", :value => "Search"}
+// .row.text-center
+//   %button#btn_send.text-center Send Message
+
+:coffeescript
+    thisID = 0
+    $ ->
+        console.log "WEBSOCKET SET-UP"
+        
+        socket = new WebSocket('wss://irisyon-finalproj-irisyon.c9users.io:8081')
+        
+        socket.onopen = ->
+            console.log "Connection opened"
+            socket.send("Ping")
+            return
+        socket.onerror = (error) ->
+            console.log "WebSocket Error " + error
+            return
+        socket.send2 = (iClient, iReceiver, iMove, iText) ->
+            communication =
+                senderID: iClient
+                receiverID: iReceiver
+                move: iMove     
+                    # Idea: Type of message
+                    # Options: message, turn_start, turn_end, kingdom_scan, ?
+                text: iText     
+                    # Idea: Content of message
+                    # Options: Text as string, for kingdom_scan it would be the image data
+            socket.send JSON.stringify(communication)
+            console.log "Sent: " + JSON.stringify(communication)
+            return
+
+        socket.onmessage = (e) ->
+            console.log "Received: " + e.data
+            if e.data.includes("deviceID") and thisID == 0
+                communication = JSON.parse(e.data)
+                thisID = communication.deviceID
+                console.log "New device has received ID: " + thisID
+            else if e.data.includes("senderID")
+                communication = JSON.parse(e.data)
+                console.log "Message from " + communication.senderID
+                if communication.senderID == "server"
+                    console.log communication.receiverID + " " + thisID
+                    if communication.move == "id_check"
+                        socket.send2(thisID, "server", "id_check", thisID)
+                    else if communication.move == "turn_start" and communication.receiverID == thisID
+                        window.location.href = "/game/board"
+            return 
+
+        $("#btn_send").click ->
+            message_content = $("#text_content").html()
+            socket.send2(thisID, "player2", "message", message_content)
+            return
+
+
+:scss
+    body {
+        margin: 0;
+        padding: 0;
+        background-image: url("/assets/send.png");
+        background-position: 0px -30px;
+        color: white;
+        font-family: 'Tangerine', serif;
+        background-repeat: no-repeat;
+        background-size: cover;
+        position: relative;
+        top: -30px;
+    }
+    
+    
+    .frame {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 400px;
+        height: 400px;
+        margin-top: -200px;
+        margin-left: -200px;
+        border-radius: 2px;
+        box-shadow: 1px 2px 10px 0px rgba(0,0,0,0.12);
+        overflow: hidden;
+
+        color: #fff;
+        font-family: 'Open Sans', Helvetica, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        perspective: 150px;
+    }
+    
+    .cb {
+    	display: none;
+    }
+    
+    .button {
+    	position: absolute;
+    	display: block;
+    	width: 100px;
+    	height: 50px;
+    	top: 175px;
+    	left: 150px;
+    	border-radius: 25px;
+    	text-align: center;
+    	line-height: 46px;
+    	text-transform: uppercase;
+    	font-weight: 600;
+    	transform-style: preserve-3d;
+    	transition: all .5s ease-in-out;
+    	cursor: pointer;
+    	box-shadow: 4px 8px 12px 0 rgba(0,0,0,0.1);
+    	
+    	.front {
+    		box-sizing: border-box;
+    		position: absolute;
+    		display: block;
+    		z-index: 2;
+    		top: 0;
+    		left: 0;
+    		right: 0;
+    		bottom: 0;
+    		color: #34495E;
+    		background: #fff;
+    		border: 2px solid #fff;
+    		border-radius: 25px;
+    		backface-visibility: hidden;
+    		transform: rotateX(0);
+    	}
+    	
+    	.back {
+    		@extend .front;
+    		z-index: 1;
+    		color: #fff;
+    		background: #64C760;
+    		border: 2px solid #fff;
+    		transform: rotateX(180deg);
+    	}
+    	
+    }
+    
+    .cb:checked ~ .button {
+    	transform: rotateX(180deg);
+    	box-shadow: 4px -8px 12px 0 rgba(0,0,0,0.1);
+    }
+        
+      

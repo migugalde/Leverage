@@ -1,0 +1,64 @@
+:coffeescript
+    $ ->
+        console.log "WEBSOCKET TO MIRROR HERE"
+        console.log "WEBSOCKET HANDLER FROM MIRROR HERE"
+        
+        socket = new WebSocket('wss://irisyon-finalproj-irisyon.c9users.io:8081');
+        
+        socket.onopen = ->
+            return
+        
+        socket.onerror = (error) ->
+            console.log 'WebSocket Error ' + error
+            return
+            
+        socket.send2 = () ->
+            communication =
+                title: "MagicMirror"
+                message: "Hello Mirror!"
+            socket.send JSON.stringify(communication)
+            console.log JSON.stringify(communication)
+            return
+
+        exclaim = "!"
+        socket.onmessage = (e) ->
+            communication = JSON.parse(e.data)
+            if communication.title == "MagicWand"
+                if $("#heading").html() == "I am the Mirror"
+                    $("#heading").html(communication.message)
+                else
+                    $("#heading").html(communication.message)
+                    $("#heading").append(exclaim)
+                    exclaim += "!"
+            return
+            
+        $("button").click ->
+            socket.send2()
+            return
+    
+//should the above connect to wand somehow        
+
+#wand
+    %h1#heading I am the mirror
+    %h2 Magic Mirror
+    %button Say Hello
+
+    
+:scss
+    $bg: desaturate(green, 20%);
+    html, body{ overflow: none;}
+    #wand{
+        height: 100%;
+        width: 100%;
+        overflow: none;
+        color: white;
+        font-family: Arial, sans-serif;
+        font-size: 4em;
+        text-align: center;
+            
+        background: $bg;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
