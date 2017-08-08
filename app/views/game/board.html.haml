@@ -4,7 +4,7 @@
       
       console.log "WEBSOCKET SET-UP"
         
-      socket = new WebSocket('wss://irisyon-finalproj-irisyon.c9users.io:8081')
+      socket = new WebSocket('wss://finalproject-wiesn.c9users.io:8081')
         
       socket.onopen = ->
         console.log "Connection opened"
@@ -36,8 +36,12 @@
         else if e.data.includes("senderID")
           communication = JSON.parse(e.data)
           console.log "Message from " + communication.senderID
-          if communication.senderID == "server" and communication.move == "id_check"
-            socket.send2(thisID, "server", "id_check", thisID)
+          if communication.senderID == "server" 
+            if communication.move == "id_check"
+              socket.send2(thisID, "server", "id_check", thisID)
+            if communication.move == "id_keep" and communication.receiverID == thisID
+              thisID = communication.text
+              console.log "Reassigned old ID: " + thisID
           return 
       
       

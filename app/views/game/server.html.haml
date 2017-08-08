@@ -14,10 +14,11 @@
     id_array = ["000","000","000"]
     turn_array = [1,0,0]
     newIDreplace = 0
+    socket = new WebSocket('wss://finalproject-wiesn.c9users.io:8081')
     $ ->
         console.log "WEBSOCKET SET-UP"
         
-        socket = new WebSocket('wss://irisyon-finalproj-irisyon.c9users.io:8081')
+        
         
         socket.onopen = ->
             console.log "Connection opened"
@@ -102,7 +103,8 @@
                 
         idCheck_End = ()->
             changed_player = id_checked.indexOf(0)
-            idUpdate(id_array[changed_player], newIDreplace)
+            # idUpdate(id_array[changed_player], newIDreplace)
+            socket.send2("server", newIDreplace, "id_keep", id_array[changed_player])
             id_check_active = false
             id_checked = [0,0,0]
         

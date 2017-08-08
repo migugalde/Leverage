@@ -26,7 +26,7 @@
     $ ->
         console.log "WEBSOCKET SET-UP"
         
-        socket = new WebSocket('wss://irisyon-finalproj-irisyon.c9users.io:8081')
+        socket = new WebSocket('wss://finalproject-wiesn.c9users.io:8081')
         
         socket.onopen = ->
             console.log "Connection opened"
@@ -62,6 +62,9 @@
                     console.log communication.receiverID + " " + thisID
                     if communication.move == "id_check"
                         socket.send2(thisID, "server", "id_check", thisID)
+                    if communication.move == "id_keep" and communication.receiverID == thisID
+                        thisID = communication.text
+                        console.log "Reassigned old ID: " + thisID
                     else if communication.move == "turn_start" and communication.receiverID == thisID
                         window.location.href = "/game/board"
             return 
