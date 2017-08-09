@@ -53,33 +53,41 @@
           dataURL = canvas.toDataURL(imgToSend)
           dataURL
           
-        sendImage = ->
-          img = getBase64Image(document.getElementById('imgParse'))
+        sendImage = (img) ->
+          # img = getBase64Image(document.getElementById('imgParse'))
           JSONimg = 
             'type': 'img'
             'data': img
           connection.send JSON.stringify(JSONimg)
           return
         
+        savedImg = "hi"
+        
         readURL = (input) ->
           if input.files and input.files[0]
             reader = new FileReader
-  
+            
             reader.onload = (e) ->
               console.log("here")
               $('#imgParse').attr 'src', e.target.result
+              savedImg = e.target.result
               # $("#text").text("SCANNING");
               $('.banner').css 'display', 'none'
               $('#view').prop 'checked', true
               # getTransfer(reader.result);
-              sendImage(e.target.result)
               return
+            if(savedImg != "hi")
+              sendImage(savedImg)
             reader.readAsDataURL input.files[0]
           return
 
         $('#imgInp').change ->
           readURL this
           return  
+          
+        $(document).click ->
+          if(savedImg != "hi")
+            sendImage(savedImg)
         
 
 

@@ -27,6 +27,8 @@
 			msg = JSON.parse(evt.data)
 			if msg['type'] == 'img'
 				console.log "Image Received!"
+				getTransfer(msg['data'])
+				console.log msg['data']
 				$('#imgParse').attr 'src', msg['data']
 			return	
 		
