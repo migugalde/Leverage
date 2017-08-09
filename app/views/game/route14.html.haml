@@ -48,7 +48,8 @@
           # Get the data-URL formatted image
           # Firefox supports PNG and JPEG. You could check img.src to guess the
           # original format, but be aware the using "image/jpg" will re-encode the image.
-          imgToSend = $("#imgParse").src
+          
+          imgToSend = canvas.toDataURL("image/png")
           dataURL = canvas.toDataURL(imgToSend)
           dataURL
           
@@ -59,9 +60,27 @@
             'data': img
           connection.send JSON.stringify(JSONimg)
           return
-          
-        $(document).click ->
-          sendImage()
+        
+        readURL = (input) ->
+          if input.files and input.files[0]
+            reader = new FileReader
+  
+            reader.onload = (e) ->
+              $('#imgParse').attr 'src', e.target.result
+              # $("#text").text("SCANNING");
+              $('.banner').css 'display', 'none'
+              $('#view').prop 'checked', true
+              # getTransfer(reader.result);
+              sendImage(e.target.result)
+              return
+            reader.readAsDataURL input.files[0]
+            #sendImage()
+          return
+
+        $('#imgInp').change ->
+          readURL this
+          return  
+        
 
 
 :scss
@@ -235,25 +254,26 @@
         
     }
    
-:javascript
-  function readURL(input) {
-    if (input.files && input.files[0]) {
-      var reader = new FileReader();
+// :javascript
+//   function readURL(input) {
+//     if (input.files && input.files[0]) {
+//       var reader = new FileReader();
       
-      reader.onload = function (e) {
-      $('#imgParse').attr('src', e.target.result);
-      // $("#text").text("SCANNING");
-      $(".banner").css("display", "none");
-      $("#view").prop('checked', true);
-     // getTransfer(reader.result);
-    }
+//       reader.onload = function (e) {
+//       $('#imgParse').attr('src', e.target.result);
+//       // $("#text").text("SCANNING");
+//       $(".banner").css("display", "none");
+//       $("#view").prop('checked', true);
+//     // getTransfer(reader.result);
+//     }
 		
-    reader.readAsDataURL(input.files[0]);
-    }
-  }
+//     reader.readAsDataURL(input.files[0]);
+//     sendImage();
+//     }
+//   }
 
-  $("#imgInp").change(function(){
-    readURL(this);
-  });
+//   $("#imgInp").change(function(){
+//     readURL(this);
+//   });
 
    
