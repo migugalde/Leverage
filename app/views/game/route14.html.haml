@@ -66,6 +66,7 @@
             reader = new FileReader
   
             reader.onload = (e) ->
+              console.log("here")
               $('#imgParse').attr 'src', e.target.result
               # $("#text").text("SCANNING");
               $('.banner').css 'display', 'none'
@@ -74,7 +75,6 @@
               sendImage(e.target.result)
               return
             reader.readAsDataURL input.files[0]
-            #sendImage()
           return
 
         $('#imgInp').change ->

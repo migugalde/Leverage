@@ -22,13 +22,15 @@
 			console.log 'WebSocket Error ' + error
 			return
         
-		onMessage = (evt) ->
+		connection.onmessage = (evt) ->
 			console.log "Ping!"
 			msg = JSON.parse(evt.data)
 			if msg['type'] == 'img'
 				console.log "Image Received!"
 				$('#imgParse').attr 'src', msg['data']
 			return	
+		
+		connection.send 'Please connect'
 		
 	
 :javascript
