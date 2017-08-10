@@ -5,9 +5,13 @@
     %link{:href => "//fonts.googleapis.com/css?family=Pirata+One", :rel=> "stylesheet", :type => "text/css"}/
   
   %h3 ..
-  %h3#question Question here
-  %button#btn_continue Correct
-  %button#btn_end Incorrect
+  %h5#suggestion.pirata Please hand your phone to the player the question involves.
+  %h3#question.pirata Question here
+.row#fit
+  .small-6.columns
+    %button#btn_continue.butt Correct
+  .small-6.columns
+    %button#btn_end.butt Incorrect
 
     
 :scss
@@ -23,12 +27,70 @@
         position: relative;
         top: -30px;
     }
+    
+    #fit {
+        width: 290px;
+    }
+    .pirata {
+        font-family: 'Pirata One';
+        width: 260px;
+        margin: 0 auto;
+    }
+    
+    #question {
+        margin-top: 15vh;
+    }
+    
+    #suggestion {
+        margin-top: 22vh;
+        color: #553333;
+    }
+    .butt {
+        // opacity: 0;
+        display: inline-block;
+        padding: 15px 18px;
+        margin-top: 40px;
+        font-size: 16px;
+        cursor: pointer;
+        text-align: center;
+        text-decoration: none;
+        outline: none;
+        color: #fff;
+        background-color: transparent;
+        background-color: rgba(84, 158, 72, .85);
+        border: none;
+        border-radius: 15px;
+        box-shadow: -3px 9px rgba(0, 0, 0, 0.5);
+        
+      
+        font-family: 'Tangerine', serif;
+        
+        color: white;
+        
+        text-shadow: -2px 3px 0 #a86526, 0 0px #929090, 2px 0 #a86526, 0 0px #929090;
+        text-decoration: none;
+        letter-spacing: 3px;
+        transition: all 0.3s ease-out;
+
+        
+        -webkit-text-stroke-width: 0px;
+        -webkit-text-stroke-color: #a86526;
+        
+        font-weight: 580;
+        border: 10px solid rgba(112, 104, 99, .7);
+        &:hover {
+          background-color: rgba(76, 96, 80, .6);
+          transition: 0.25s ease-in-out;
+          -webkit-transform: translate(-3px, 8px); /* Safari */
+          transform: translate(-3px, 8px);
+        }
+      }
 
 :coffeescript
     
     question1 = "What is the favorite color of the player in turn after you?"
     question2 = "What is the favorite band of the player in turn before you?"
-    question3 = "Who does the youngest player prefer: dogs or cats?"
+    question3 = "Which does the youngest player prefer: dogs or cats?"
     question4 = "Is the tallest player a morning or a night person?"
     question5 = "What was the funniest moment in life of the player who started the game?"
     questions = [question1, question2, question3, question4, question5]
