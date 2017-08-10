@@ -16,7 +16,7 @@
       %input#message_player{:name => "character", :placeholder => "Character to Send To", :type => "text"}
       %input#message_content{:name => "message_content", :placeholder => "Your Secret Message", :type => "text"}/
       %input#submit_message.button.expanded{:name => "commit", :type => "submit", :value => "submit"}
-    // %button#btn_back Back
+      %button#btn_back I've changed my mind!
     %input#cb.cb{:name => "cb", :type => "checkbox"}
     // %label.button{:for => "cb"}
     //   %span.front send
@@ -89,6 +89,9 @@
             socket.send2(thisID, "server", "turn_end", "")
             window.location.href = "/game/treasure_map"
             return
+            
+        $("#btn_back").click ->
+            window.location.href = "/game/treasure_map"
 
 
 :scss
@@ -213,5 +216,20 @@
         z-index: 100;
         margin: 0 auto;
         margin-top: 30px;
+    }
+    
+    #btn_back {
+        color: #663333;
+        font-family: 'Pirata One';
+        text-align:right;
+        margin-left:70px;
+        border-bottom: 1px dashed #663333;
+        animation: all 0.6s ease-in-out;
+        transition: all 0.6s ease-in-out;
+    }
+    
+    #btn_back:hover, #btn_back:focus {
+        color: #993333;
+        border-bottom: 1px dashed #993333;
     }
       
