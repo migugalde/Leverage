@@ -38,6 +38,14 @@ Rails.application.routes.draw do
   get "game/route15", to: "game#route15", as: "route15"
   
   get "game/server", to: "game#server", as: "server"
+  
+  get "game/manual", to: "game#manual", as: "manual"
+  
+  get "game/players", to: "game#players", as: "players"
+  
+  get "game/characters", to: "game#characters", as: "characters"
+  
+  get "game/success", to: "game#success", as: "success"
 
   resources :colorrecognition
   

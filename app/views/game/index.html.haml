@@ -4,16 +4,14 @@
     %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
     %link{:href => "//fonts.googleapis.com/css?family=Pirata+One", :rel=> "stylesheet", :type => "text/css"}/
 
-
-
 .wrapper
   %input#view{:name => "view", :style => "display:none;", :onClick => "show()", :type => "checkbox"}/
   %label{:for => "view"}
   .buttons-wrapper
-    %button.button ENTER NAME
-    %button.button PLAYERS
-    %button.button CHARACTER
-    %button.butt START
+    %manual.button MANUAL
+    %players.button PLAYERS
+    %character.button CHARACTER
+    %butt.butt START
  
 
 :scss
@@ -246,3 +244,76 @@
       }
       
     }
+    
+:coffeescript
+
+  $("manual").click ->
+    console.log('hello')
+    window.location.href = "/game/manual";
+    return
+    
+  $("players").click ->
+    console.log('hello')
+    window.location.href = "/game/players";
+    return
+    
+  $("character").click ->
+    console.log('hello')
+    window.location.href = "/game/characters";
+    return
+    
+  $("butt").click ->
+    console.log('hello')
+    window.location.href = "/game/treasure_map";
+    return
+  
+  # Basic communication
+    
+  thisID = 0
+  $ ->
+    $("#text_turn").html("It's not your turn!")
+        
+    console.log "WEBSOCKET SET-UP"
+        
+    socket = new WebSocket(Rails.configuration.x.local_url)
+        
+    socket.onopen = ->
+      console.log "Connection opened"
+      socket.send("Ping")
+      return
+    socket.onerror = (error) ->
+      console.log "WebSocket Error " + error
+      return
+    socket.send2 = (iClient, iReceiver, iMove, iText) ->
+      communication =
+        senderID: iClient
+        receiverID: iReceiver
+        move: iMove     
+          # Idea: Type of message
+          # Options: message, turn_start, turn_end, kingdom_scan, ?
+        text: iText     
+          # Idea: Content of message
+          # Options: Text as string, for kingdom_scan it would be the image data
+      socket.send JSON.stringify(communication)
+      console.log "Sent: " + JSON.stringify(communication)
+      return
+
+    socket.onmessage = (e) ->
+      console.log "Received: " + e.data
+      if e.data.includes("deviceID") and thisID == 0
+        communication = JSON.parse(e.data)
+        thisID = communication.deviceID
+        console.log "New device has received ID: " + thisID
+      else if e.data.includes("senderID")
+        communication = JSON.parse(e.data)
+        console.log "Message from " + communication.senderID
+        if communication.senderID == "server"
+          console.log communication.receiverID + " " + thisID
+          if communication.move == "id_check"
+            socket.send2(thisID, "server", "id_check", thisID)
+          else if communication.move == "id_keep" and communication.receiverID == thisID
+            thisID = communication.text
+            console.log "Reassigned old ID: " + thisID
+          else if communication.move == "ping"
+            socket.send2(thisID, "server", "ping")
+      return

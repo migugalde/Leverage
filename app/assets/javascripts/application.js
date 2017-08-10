@@ -16,6 +16,7 @@
 //= require panolens.min
 //= require panolens
 //= require TweenMax.min
+//= require jquery-ui
 //= require_tree .
 
 

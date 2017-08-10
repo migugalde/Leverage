@@ -69,10 +69,10 @@
 :coffeescript
     $ ->
         
-        $("butt").click ->
-          console.log('hello')
-          window.location.href = "/game/index";
-          return
+      $("butt").click ->
+        console.log('hello')
+        window.location.href = "/game/index"
+        return
       
       container = document.querySelector('#container')
       panel = document.querySelector('#panel')
@@ -80,7 +80,7 @@
       
       viewer = new (PANOLENS.Viewer)(container: container)
       viewer.add panorama
-      viewer.enableControl(1);
+      viewer.enableControl(1)
       
 
       camera = new (THREE.PerspectiveCamera)(45, 1, 1, 2000)

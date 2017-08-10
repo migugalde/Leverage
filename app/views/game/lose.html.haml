@@ -1,0 +1,314 @@
+!!!
+%html
+  %head
+    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+    %link{:href => "//fonts.googleapis.com/css?family=Pirata+One", :rel=> "stylesheet", :type => "text/css"}/
+
+
+
+.wrapper
+  %input#view{:name => "view", :style => "display:none;", :onClick => "show()", :type => "checkbox"}/
+  %label{:for => "view"}
+  .buttons-wrapper
+    %butt1.button ENTER KINGDOM
+    %butt2.button SEND MESSAGE
+    %butt3.button GUESS FORMULA
+ 
+
+:scss
+    @keyframes jumpUp {
+      0% {
+        opacity: 0;
+        transform: translateY(0px);
+      }
+    
+      33.33% {
+        transform: translateY(-10px);
+      }
+    
+      66.66% {
+        transform: translateY(5px);
+      }
+    
+      100% {
+        opacity: 1;
+        transform: translateY(0px);
+      }
+    }
+    
+    
+    
+    @keyframes shakeIt {
+      0% {
+        transform: rotate(7deg);
+      }
+    
+      100% {
+        transform: rotateZ(-7deg);
+      }
+    }
+    
+    
+    body {
+      margin: 0;
+      padding: 0;
+      background-image: url("/assets/back2.png");
+      background-position: 0px -30px;
+      color: white;
+      font-family: 'PT Sans', sans-serif;
+      background-repeat: no-repeat;
+      background-size: cover;
+      position: relative;
+      top: -30px;
+    }
+    
+    .wrapper {
+      margin: 0 auto;
+      max-width: 1140px;
+      text-align: center;
+      padding-top: 70px;
+      position: relative;
+    }
+    
+    label[for=view] {
+      background-color: rgba(112, 104, 99, .2);
+      display: inline-block;
+     
+      font-size: 32px;
+      
+      transition: 0.15s ease-in-out;
+      cursor: pointer;
+      user-select: none;
+      animation: shakeIt 1s ease-in-out 0s infinite alternate-reverse;
+      box-shadow: -2px 12px 16px rgba(0,0,0,0.5);
+
+      border: 10px solid rgba(112, 104, 99, .7);
+      border-radius: 50%;
+      
+      
+      background-image: url("/assets/icon.png");
+      width: 150px;
+      height: 150px;
+      
+      background-size: cover;
+      background-repeat: no-repeat;
+      &:hover {
+        box-shadow: 0px 2px 0px rgba(0, 0, 0, 0.25);
+      }
+    }
+    
+    .buttons-wrapper {
+      font-size: 0px;
+     
+      .button {
+        font-family: 'Tangerine', serif;
+        
+        margin-top: 5px;
+        margin-right: 16px;
+        background-color: transparent;
+        
+        background-color: rgba(163, 198, 164, 0.2);
+        text-align: center;
+        justify-content: center;
+        align-items: center;
+        display: inline-block;
+ 
+        font-size: 25px;
+        opacity: 0;
+        outline: none;
+        cursor: pointer;
+
+        box-sizing: border-box;
+        padding: 8px;
+        width: 70%;
+        height: 50%;
+        border-radius: 5px;
+
+        color: #ff912d;
+        
+        text-shadow: -3px 3px 0 #a86526, 0 0px #929090, 2px 0 #a86526, 0 0px #929090;
+        text-decoration: none;
+        letter-spacing: 3px;
+        transition: all 0.3s ease-out;
+
+        
+        -webkit-text-stroke-width: 0px;
+        -webkit-text-stroke-color: #a86526;
+        
+        font-weight: 580;
+        
+        box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+        border: 8px solid rgba(0,0,0, .45);
+        border-radius: 5px;
+        border-top: 5px;
+        border-right: 5px;
+        margin-left: 20px;
+        &:first-child {
+          margin-top: 20px;
+        }
+        &:hover {
+          background-color: rgba(76, 96, 80, .6);
+          transition: 0.25s ease-in-out;
+          -webkit-transform: translate(-3px, 8px); /* Safari */
+          transform: translate(-3px, 8px);
+        }
+      }
+      .butt {
+        opacity: 0;
+        display: inline-block;
+        padding: 15px 25px;
+        margin-top: 40px;
+        font-size: 24px;
+        cursor: pointer;
+        text-align: center;
+        text-decoration: none;
+        outline: none;
+        color: #fff;
+        background-color: transparent;
+        background-color: rgba(84, 158, 72, .85);
+        border: none;
+        border-radius: 15px;
+        box-shadow: -3px 9px rgba(0, 0, 0, 0.5);
+        
+      
+        font-family: 'Tangerine', serif;
+        
+        color: white;
+        
+        text-shadow: -2px 3px 0 #a86526, 0 0px #929090, 2px 0 #a86526, 0 0px #929090;
+        text-decoration: none;
+        letter-spacing: 3px;
+        transition: all 0.3s ease-out;
+
+        
+        -webkit-text-stroke-width: 0px;
+        -webkit-text-stroke-color: #a86526;
+        
+        font-weight: 580;
+        border: 10px solid rgba(112, 104, 99, .7);
+        &:hover {
+          background-color: rgba(76, 96, 80, .6);
+          transition: 0.25s ease-in-out;
+          -webkit-transform: translate(-3px, 8px); /* Safari */
+          transform: translate(-3px, 8px);
+        }
+      }
+    }
+    
+    
+  
+    
+    #view:checked + label[for=view] {
+      background-color: rgba(0, 0, 0, .5);
+      box-shadow: 2px 10px 5px rgba(0, 0, 0, 0.4);
+      
+      transition: 0.25s cubic-bezier(0.25, 2.38, 0.91, 1.19);
+      animation-play-state: paused;
+      + .buttons-wrapper {
+        opacity: 1;
+        display: block;
+        .button {
+          &:nth-child(3n+1) {
+            animation: jumpUp 0.65s ease-in-out 0.2s forwards;
+            &:active {
+              box-shadow: 0 5px #666;
+              transform: translateY(4px);
+            }
+          }
+          &:nth-child(3n+2) {
+            animation: jumpUp 0.65s ease-in-out 0.4s forwards;
+            &:active {
+              box-shadow: 0 5px #666;
+              transform: translateY(4px);
+            }
+          }
+          &:nth-child(3n+3) {
+            animation: jumpUp 0.65s ease-in-out 0.6s forwards;
+            &:active {
+              box-shadow: 0 5px #666;
+              transform: translateY(4px);
+            }
+          }
+        }
+        .butt {
+          opacity: 1;
+          
+          &:hover {
+            background-color: rgba(76, 96, 80, .9);
+          }
+          &:active {
+            background-color: rgba(76, 96, 80, .9);
+            box-shadow: 0 5px #666;
+            transform: translateY(4px);
+          }
+        }
+      }
+      
+    }
+    
+:coffeescript
+  $("butt1").click ->
+    console.log('hello')
+    window.location.href = "/game/route14";
+    return
+        
+  $("butt2").click ->
+    console.log('hello')
+    window.location.href = "/game/win";
+    return
+        
+  $("butt3").click ->
+    console.log('hello')
+    window.location.href = "/game/night_shade";
+    return
+        
+  # Basic communication
+    
+  thisID = 0
+  $ ->
+    $("#text_turn").html("It's not your turn!")
+        
+    console.log "WEBSOCKET SET-UP"
+        
+    socket = new WebSocket(Rails.configuration.x.local_url)
+        
+    socket.onopen = ->
+      console.log "Connection opened"
+      socket.send("Ping")
+      return
+    socket.onerror = (error) ->
+      console.log "WebSocket Error " + error
+      return
+    socket.send2 = (iClient, iReceiver, iMove, iText) ->
+      communication =
+        senderID: iClient
+        receiverID: iReceiver
+        move: iMove     
+          # Idea: Type of message
+          # Options: message, turn_start, turn_end, kingdom_scan, ?
+        text: iText     
+          # Idea: Content of message
+          # Options: Text as string, for kingdom_scan it would be the image data
+      socket.send JSON.stringify(communication)
+      console.log "Sent: " + JSON.stringify(communication)
+      return
+
+    socket.onmessage = (e) ->
+      console.log "Received: " + e.data
+      if e.data.includes("deviceID") and thisID == 0
+        communication = JSON.parse(e.data)
+        thisID = communication.deviceID
+        console.log "New device has received ID: " + thisID
+      else if e.data.includes("senderID")
+        communication = JSON.parse(e.data)
+        console.log "Message from " + communication.senderID
+        if communication.senderID == "server"
+          console.log communication.receiverID + " " + thisID
+          if communication.move == "id_check"
+            socket.send2(thisID, "server", "id_check", thisID)
+          else if communication.move == "id_keep" and communication.receiverID == thisID
+            thisID = communication.text
+            console.log "Reassigned old ID: " + thisID
+          else if communication.move == "ping"
+            socket.send2(thisID, "server", "ping")
+      return

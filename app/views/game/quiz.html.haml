@@ -1,64 +1,89 @@
-:coffeescript
-    $ ->
-        console.log "WEBSOCKET TO MIRROR HERE"
-        console.log "WEBSOCKET HANDLER FROM MIRROR HERE"
-        
-        socket = new WebSocket('wss://irisyon-finalproj-irisyon.c9users.io:8081');
-        
-        socket.onopen = ->
-            return
-        
-        socket.onerror = (error) ->
-            console.log 'WebSocket Error ' + error
-            return
-            
-        socket.send2 = () ->
-            communication =
-                title: "MagicMirror"
-                message: "Hello Mirror!"
-            socket.send JSON.stringify(communication)
-            console.log JSON.stringify(communication)
-            return
-
-        exclaim = "!"
-        socket.onmessage = (e) ->
-            communication = JSON.parse(e.data)
-            if communication.title == "MagicWand"
-                if $("#heading").html() == "I am the Mirror"
-                    $("#heading").html(communication.message)
-                else
-                    $("#heading").html(communication.message)
-                    $("#heading").append(exclaim)
-                    exclaim += "!"
-            return
-            
-        $("button").click ->
-            socket.send2()
-            return
-    
-//should the above connect to wand somehow        
-
-#wand
-    %h1#heading I am the mirror
-    %h2 Magic Mirror
-    %button Say Hello
+!!!
+%html
+  %head
+    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+    %link{:href => "//fonts.googleapis.com/css?family=Pirata+One", :rel=> "stylesheet", :type => "text/css"}/
+  
+  %h3 ..
+  %h3#question Question here
+  %button#btn_continue Correct
+  %button#btn_end Incorrect
 
     
 :scss
-    $bg: desaturate(green, 20%);
-    html, body{ overflow: none;}
-    #wand{
-        height: 100%;
-        width: 100%;
-        overflow: none;
+    body {
+        margin: 0;
+        padding: 0;
+        background-image: url("/assets/back2.png");
+        background-position: 0px -30px;
         color: white;
-        font-family: Arial, sans-serif;
-        font-size: 4em;
-        text-align: center;
-            
-        background: $bg;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
+        font-family: 'PT Sans', sans-serif;
+        background-repeat: no-repeat;
+        background-size: cover;
+        position: relative;
+        top: -30px;
     }
+
+:coffeescript
+    
+    question1 = "What is the favorite color of the player in turn after you?"
+    question2 = "What is the favorite band of the player in turn before you?"
+    question3 = "Who does the youngest player prefer: dogs or cats?"
+    question4 = "Is the tallest player a morning or a night person?"
+    question5 = "What was the funniest moment in life of the player who started the game?"
+    questions = [question1, question2, question3, question4, question5]
+    
+    thisID = 0
+    $ ->
+        console.log "WEBSOCKET SET-UP"
+        
+        socket = new WebSocket(Rails.configuration.x.local_url)
+        
+        socket.onopen = ->
+            console.log "Connection opened"
+            socket.send("Ping")
+            return
+        socket.onerror = (error) ->
+            console.log "WebSocket Error " + error
+            return
+        socket.send2 = (iClient, iReceiver, iMove, iText) ->
+            communication =
+                senderID: iClient
+                receiverID: iReceiver
+                move: iMove     
+                    # Idea: Type of message
+                    # Options: message, turn_start, turn_end, kingdom_scan, ?
+                text: iText     
+                    # Idea: Content of message
+                    # Options: Text as string, for kingdom_scan it would be the image data
+            socket.send JSON.stringify(communication)
+            console.log "Sent: " + JSON.stringify(communication)
+            return
+
+        socket.onmessage = (e) ->
+            console.log "Received: " + e.data
+            if e.data.includes("deviceID") and thisID == 0
+                communication = JSON.parse(e.data)
+                thisID = communication.deviceID
+                console.log "New device has received ID: " + thisID
+            else if e.data.includes("senderID")
+                communication = JSON.parse(e.data)
+                console.log "Message from " + communication.senderID
+                if communication.senderID == "server"
+                    console.log communication.receiverID + " " + thisID
+                    if communication.move == "id_check"
+                        socket.send2(thisID, "server", "id_check", thisID)
+                    if communication.move == "id_keep" and communication.receiverID == thisID
+                        thisID = communication.text
+                        console.log "Reassigned old ID: " + thisID
+                    if communication.move == "ping"
+                        socket.send2(thisID, "server", "ping")
+        
+        $("#question").html(questions[Math.floor(Math.random()*questions.length)])
+        
+        $("#btn_continue").click ->
+            window.location.href = "/game/board";
+        
+        $("#btn_end").click ->
+            socket.send2(thisID, "server", "turn_end", "")
+            window.location.href = "/game/treasure_map";

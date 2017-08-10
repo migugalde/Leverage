@@ -1,10 +1,14 @@
 %body
     %h1 Network information
-    %h3 Player; ID; Turn
-    %h3#serv server; 000; n/a
-    %h3#p1 a; 000; Yes
-    %h3#p2 b; 000; No
-    %h3#p3 c; 000; No
+    %h3 Player; ID; Kingdom; Turn
+    %h3#serv server; 000; n/a; n/a
+    %h3#p1 a; 000; kngdm; Yes
+    %h3#p2 b; 000; kngdm; No
+    %h3#p3 c; 000; kngdm; No
+    %button#startGame Start Game
+    %h1
+    %h3 Secret Formula:
+    %h3#sform ???
 
 
 :coffeescript
@@ -14,10 +18,22 @@
     id_array = ["000","000","000"]
     turn_array = [1,0,0]
     newIDreplace = 0
+    pingSkip = true
+    pingTime = 15000
+    secretFormula = "???"
+    game_started = false
+    form = [0,0,0]
+    kingdoms = ["Candy", "Leaf", "Fish", "Tech", "Space", "Wizard"]
+    socket = new WebSocket(Rails.configuration.x.local_url)
     $ ->
         console.log "WEBSOCKET SET-UP"
         
-        socket = new WebSocket('wss://irisyon-finalproj-irisyon.c9users.io:8081')
+        sendPing = ->
+            if not pingSkip
+                socket.send2("server", "all", "ping")
+            pingSkip = false
+        
+        pings = window.setInterval sendPing, pingTime
         
         socket.onopen = ->
             console.log "Connection opened"
@@ -32,7 +48,7 @@
                 receiverID: iReceiver
                 move: iMove     
                     # Idea: Type of message
-                    # Options: message, turn_start, turn_end, kingdom_scan, id_check, ?
+                    # Options: message, turn_start, turn_end, kingdom_scan, id_check, ping, ?
                 text: iText     
                     # Idea: Content of message
                     # Options: Text as string, for kingdom_scan it would be the image data
@@ -42,25 +58,26 @@
 
         socket.onmessage = (e) ->
             console.log "Received: " + e.data
+            # pingSkip = true
             if e.data.includes("deviceID")
                 communication = JSON.parse(e.data)
                 idUpdate("000", communication.deviceID)
             
             if e.data.includes("senderID")
                 communication = JSON.parse(e.data)
-                if communication.move == "id_check"
-                    if id_check_missing_posResp > 1
-                        idCheck(communication)
-                
-                else if communication.move == "turn_end"
-                    turnUpdate(communication.senderID)
-                    
-                
-                else if communication.receiverID == "server"
-                    if communication.move == "kingdom_scan"
-                        output_text = communication.move + " " + communication.text
-                    else
-                        output_text = communication.move
+                if communication.receiverID == "server"
+                    if communication.move == "id_check"
+                        if id_check_missing_posResp > 1
+                            idCheck(communication)
+                    else if communication.move == "turn_end"
+                        turnUpdate(communication.senderID)
+                    else if communication.move == "get_gamedata"
+                        gamedata = kingdoms[0] + "," + kingdoms[1] + "," + kingdoms[2] + "," + form[0] + "," + form[1] + "," + form[2]
+                        socket.send2("server", communication.senderID, "gamedata", gamedata)
+                    else if communication.move == "start_game"
+                        if not game_started
+                            if turn_array[id_array.indexOf(communication.senderID)] == 1
+                                socket.send2("server", communication.senderID, "turn_start", "")
                 else
                     output_text = communication.text
                 $("#outputString").html("Output to " + communication.receiverID + ": " + output_text)
@@ -78,6 +95,7 @@
             else if $("#p3").html().includes(oldID)
                 $("#p3").html($("#p3").html().replace(oldID, newID)) 
                 id_array[2] = newID
+                setupGame()
             else if oldID == "000"
                 newIDreplace = newID
                 idCheck_Start()
@@ -102,7 +120,8 @@
                 
         idCheck_End = ()->
             changed_player = id_checked.indexOf(0)
-            idUpdate(id_array[changed_player], newIDreplace)
+            # idUpdate(id_array[changed_player], newIDreplace)
+            socket.send2("server", newIDreplace, "id_keep", id_array[changed_player])
             id_check_active = false
             id_checked = [0,0,0]
         
@@ -127,6 +146,41 @@
                 turn_array[2] = 0 
                 turn_array[0] = 1
                 socket.send2("server", id_array[0], "turn_start", "")
+        
+        setupGame = ()->
+            # Assign kingdoms to players
+            kingdoms = shuffle(kingdoms)
+            $("#p1").html($("#p1").html().replace("kngdm", kingdoms[0]))
+            $("#p2").html($("#p2").html().replace("kngdm", kingdoms[1]))
+            $("#p3").html($("#p3").html().replace("kngdm", kingdoms[2]))
+            
+            # Determine secret formula
+            form_sum = 4
+            for i in [1..form_sum]
+                cur_res = Math.floor(Math.random()*3)
+                form[cur_res] = form[cur_res] + 1
+            $("#sform").html(form[0] + "x" + kingdoms[0] + " " + form[1] + "x" + kingdoms[1] + " " + form[2] + "x" + kingdoms[2] + " ")
+            
+            
+        shuffle = (array) ->
+            currentIndex = array.length
+            temporaryValue = undefined
+            randomIndex = undefined
+            # While there remain elements to shuffle...
+            while 0 != currentIndex
+                # Pick a remaining element...
+                randomIndex = Math.floor(Math.random() * currentIndex)
+                currentIndex -= 1
+                # And swap it with the current element.
+                temporaryValue = array[currentIndex]
+                array[currentIndex] = array[randomIndex]
+                array[randomIndex] = temporaryValue
+            array
+        
+            
+                
+        $("#startGame").click ->
+            socket.send2("server", id_array[0], "turn_start", "")
 
     
 :scss

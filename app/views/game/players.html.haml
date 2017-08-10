@@ -1,0 +1,90 @@
+!!!
+
+%html
+  %head
+    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+    %link{:href => "//fonts.googleapis.com/css?family=Pirata+One", :rel=> "stylesheet", :type => "text/css"}/
+  %h3 ..
+  %h3#kingdoms Game data goes here
+  %button#btn_back Back
+:coffeescript
+  # Basic communication
+  
+  thisID = 0
+  userData = [0,0,0]
+  secForm = [0,0,0]
+    
+  $ ->
+ 
+    console.log "WEBSOCKET SET-UP"
+    
+    socket = new WebSocket(Rails.configuration.x.local_url)
+    
+    socket.onopen = ->
+      console.log "Connection opened"
+      socket.send("Ping")
+      return
+    socket.onerror = (error) ->
+      console.log "WebSocket Error " + error
+      return
+    socket.send2 = (iClient, iReceiver, iMove, iText) ->
+      communication =
+        senderID: iClient
+        receiverID: iReceiver
+        move: iMove     
+          # Idea: Type of message
+          # Options: message, turn_start, turn_end, kingdom_scan, ?
+        text: iText     
+          # Idea: Content of message
+          # Options: Text as string, for kingdom_scan it would be the image data
+      socket.send JSON.stringify(communication)
+      console.log "Sent: " + JSON.stringify(communication)
+      return
+
+    socket.onmessage = (e) ->
+      console.log "Received: " + e.data
+      if e.data.includes("deviceID") and thisID == 0
+        communication = JSON.parse(e.data)
+        thisID = communication.deviceID
+        console.log "New device has received ID: " + thisID
+        socket.send2(thisID, "server", "get_gamedata")
+      else if e.data.includes("senderID")
+        communication = JSON.parse(e.data)
+        console.log "Message from " + communication.senderID
+        if communication.senderID == "server" 
+          if communication.move == "id_check"
+            socket.send2(thisID, "server", "id_check", thisID)
+          if communication.move == "id_keep" and communication.receiverID == thisID
+            thisID = communication.text
+            console.log "Reassigned old ID: " + thisID
+          if communication.move == "gamedata" and communication.receiverID == thisID
+            gamedata = communication.text.split(',')
+            $("#kingdoms").html(gamedata[0] + ',' + gamedata[1] + ',' + gamedata[2])
+            secForm[0] = gamedata[3]
+            secForm[1] = gamedata[4]
+            secForm[2] = gamedata[5]
+            console.log "Reassigned old ID: " + thisID
+          if communication.move == "ping"
+            socket.send2(thisID, "server", "ping")
+      return 
+
+    $("#btn_back").click ->
+      window.location.href = "/game/index";
+
+
+:scss
+    
+  body {
+    margin: 0;
+    padding: 0;
+    background-image: url("/assets/back2.png");
+    background-position: 0px -30px;
+    color: white;
+    font-family: 'PT Sans', sans-serif;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: relative;
+    top: -30px;
+  }
+    
+

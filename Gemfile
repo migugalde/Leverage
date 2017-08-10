@@ -50,3 +50,7 @@ group :development do
   gem 'spring'
 end
 
+gem 'jquery-ui-rails'
+
+
+

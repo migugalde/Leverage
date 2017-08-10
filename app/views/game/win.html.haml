@@ -5,7 +5,7 @@
     %link{:href => "//fonts.googleapis.com/css?family=Pirata+One", :rel=> "stylesheet", :type => "text/css"}/
  
 .frame
-  %input#cb.cb{:name => "cb", :type => "checkbox"}/
+  %input#cb.cb{:name => "cb", :type => "checkbox"}
   %label.button{:for => "cb"}
     %span.front send
     %span.back done
@@ -22,11 +22,15 @@
 //   %button#btn_send.text-center Send Message
 
 :coffeescript
+    # Basic communication
+    
     thisID = 0
     $ ->
+        $("#text_turn").html("It's not your turn!")
+        
         console.log "WEBSOCKET SET-UP"
         
-        socket = new WebSocket('wss://irisyon-finalproj-irisyon.c9users.io:8081')
+        socket = new WebSocket(Rails.configuration.x.local_url)
         
         socket.onopen = ->
             console.log "Connection opened"
@@ -62,9 +66,12 @@
                     console.log communication.receiverID + " " + thisID
                     if communication.move == "id_check"
                         socket.send2(thisID, "server", "id_check", thisID)
-                    else if communication.move == "turn_start" and communication.receiverID == thisID
-                        window.location.href = "/game/board"
-            return 
+                    else if communication.move == "id_keep" and communication.receiverID == thisID
+                        thisID = communication.text
+                        console.log "Reassigned old ID: " + thisID
+                    else if communication.move == "ping"
+                        socket.send2(thisID, "server", "ping")
+            return  
 
         $("#btn_send").click ->
             message_content = $("#text_content").html()

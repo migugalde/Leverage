@@ -8,13 +8,13 @@
     .row
       %h1 ..
     .row
-      %h2#text_content.text-center ...
+      %button#btn_back Back
 
 :coffeescript
   $ ->
         console.log "WEBSOCKET SET-UP"
         
-        socket = new WebSocket('wss://irisyon-finalproj-irisyon.c9users.io:8081');
+        socket = new WebSocket(Rails.configuration.x.local_url);
         
         socket.onopen = ->
             console.log "Connection opened"
@@ -45,7 +45,8 @@
                 if communication.receiverID == "player2"
                   $("#text_content").html(communication.text)
             return 
-
+        
+        
 
 :scss
     body {

@@ -22,5 +22,6 @@ module Workspace
 
     # Do not swallow errors in after_commit/after_rollback callbacks.
     config.active_record.raise_in_transactional_callbacks = true
+    config.x.local_url = 'wss://irisyon-finalproj-irisyon.c9users.io:8081'
   end
 end

@@ -1,6 +1,14 @@
 
+%butt#button EXPLORE
+
 #container
     #bg
+    
+
+#panel
+
+#paneltwo
+
 
 !!!
 %html
@@ -9,57 +17,243 @@
         %link{:href => "//fonts.googleapis.com/css?family=Pirata+One", :rel=> "stylesheet", :type => "text/css"}/
 
 :css
-    html, body{
-      width: 100%;
-      height: 100%;
-      font-family: 'Tangerine', serif;
-      font-size: 48px;
-      
+    html, body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        margin: 0;
+        background: transparent;
     }
+        
     #container {
-      height: 100%;
-      width: 100%;
+        width: 100%;
+        height: 100%;
+        background: transparent;
+
     }
+        
     #bg {
         position: absolute;
         width: 100%;
         height: 100%;
-        background-image: url("/assets/back3.png");
+        background-image: url("/assets/back4.png");
         background-position: 0px -25px;
         background-repeat: no-repeat;
         background-size: cover;
 
     }
-   
-
-:coffeescript
-    $ ->
-      container = document.querySelector('#container')
-      panel = document.querySelector('#panel')
-      panorama = new (PANOLENS.ImagePanorama)('/assets/back.png')
-      
-      infospot = new (PANOLENS.Infospot)(1000, '/assets/closedchest.png')
-      infospot.position.set 0, -2000, -5000
-      infospot.addHoverElement panel, 150
-      infospot.addHoverText("IT'S A TRAP!")
-      infospot.lockHoverElement()
-      infospot.addEventListener 'click', ->
+    #panel {
+        width: 200px;
+        height: 200px;
+        background: transparent;
         
         
-        console.log("hi")
-        return
-
-      panorama.add infospot
-      
-      viewer = new (PANOLENS.Viewer)(container: container)
-      viewer.add panorama
-      viewer.enableControl(1);
-      
-
-      camera = new (THREE.PerspectiveCamera)(45, 1, 1, 2000)
-      scene = new (THREE.Scene)
-
-     
-      
-      
+    }
     
+    #paneltwo {
+        width: 400px;
+        height: 400px;
+        background: transparent;
+    }
+
+    #button {
+        font-family: 'Tangerine', serif;
+
+        text-align: center;
+        justify-content: center;
+        align-items: center;
+        display: inline-block;
+    
+        box-sizing: border-box;
+        padding: 8px;
+        width: 60%;
+        height: 14%;
+  
+        border-radius: 4px;
+        color: #ff912d;
+        text-shadow: -3px 3px 0 #7c7872, 0 0px #929090, 2px 0 #929090, 0 0px #929090;
+        text-decoration: none;
+        letter-spacing: 8px;
+        transition: all 0.3s ease-out;
+        font-size: 200%;
+        
+        -webkit-text-stroke-width: 1px;
+        -webkit-text-stroke-color: #96420a;
+        
+        font-weight: 700;
+        
+        
+        
+        position: absolute;
+        top: 57px;
+        left: 85px;
+        z-index: 999;
+    }
+
+      
+:coffeescript
+
+    container = document.querySelector('#container')
+    panel = document.querySelector('#panel')
+
+    viewer = new (PANOLENS.Viewer)(container: container)
+    panorama = new (PANOLENS.ImagePanorama)('/assets/back.png')
+    
+    renderer = new THREE.WebGLRenderer({alpha: true})
+    renderer.setClearColor 0xffffff, 0
+    renderer.setSize panel.clientWidth, panel.clientHeight
+    camera = new (THREE.PerspectiveCamera)(45, 1, 1, 1000)
+    scene = new (THREE.Scene)
+    
+    infospot = new (PANOLENS.Infospot)(1000, '/assets/leafban.png')
+    infospot.position.set 0, -1300, -5000
+    infospot.addHoverElement panel, 300
+    panorama.add infospot
+    
+
+    map = THREE.ImageUtils.loadTexture('/assets/fml.png')
+    geometry = new THREE.PlaneGeometry(10, 10, 10, 10)
+    material = new THREE.MeshBasicMaterial({shading: THREE.FlatShading, map: map, side: THREE.DoubleSide, transparent: true, opacity: 1})
+    mesh = new THREE.Mesh(geometry, material)
+    map.wrapS = map.wrapT = THREE.RepeatWrapping
+    map.repeat.set( 1, 1 )
+    mesh.position.z = -20
+    mesh.position.y = -10
+    scene.add mesh
+
+    panorama.add mesh
+
+    infospottwo = new (PANOLENS.Infospot)(1000, '/assets/candban.png')
+    infospottwo.position.set -3000, 3000, -5000
+    infospottwo.addHoverElement paneltwo, 300
+    panorama.add infospottwo
+
+
+    maptwo = THREE.ImageUtils.loadTexture('/assets/candking.png')
+    geometrytwo = new THREE.PlaneGeometry(10, 10, 10, 10)
+    materialtwo = new THREE.MeshBasicMaterial({shading: THREE.FlatShading, map: maptwo, side: THREE.DoubleSide, transparent: true, opacity: 1})
+    meshtwo = new THREE.Mesh(geometrytwo, materialtwo)
+    maptwo.wrapS = maptwo.wrapT = THREE.RepeatWrapping
+    maptwo.repeat.set( 1, 1 )
+    meshtwo.position.z = -25
+    meshtwo.position.y = 10
+    meshtwo.position.x = 15
+    scene.add meshtwo
+    
+    panorama.add meshtwo
+    
+    
+    infospotthree = new (PANOLENS.Infospot)(1000, '/assets/magicban.png')
+    infospotthree.position.set 850, -1000, 5000
+    infospotthree.addHoverElement paneltwo, 300
+    panorama.add infospotthree
+
+
+    mapthree = THREE.ImageUtils.loadTexture('/assets/magickingdomtemp.png')
+    geometrythree = new THREE.PlaneGeometry(10, 10, 10, 10)
+    materialthree = new THREE.MeshBasicMaterial({shading: THREE.FlatShading, map: mapthree, side: THREE.DoubleSide, transparent: true, opacity: 1})
+    meshthree = new THREE.Mesh(geometrythree, materialthree)
+    mapthree.wrapS = mapthree.wrapT = THREE.RepeatWrapping
+    mapthree.repeat.set( 1, 1 )
+    meshthree.position.z = 28
+    meshthree.position.y = -10
+    meshthree.position.x = -4
+    scene.add meshthree
+    
+    panorama.add meshthree
+    
+    
+    infospotfour = new (PANOLENS.Infospot)(1000, '/assets/magicban.png')
+    infospotfour.position.set 850, -1000, 5000
+    infospotfour.addHoverElement paneltwo, 300
+    panorama.add infospotfour
+
+
+    mapfour = THREE.ImageUtils.loadTexture('/assets/techkingdomtemp.png')
+    geometryfour = new THREE.PlaneGeometry(10, 10, 10, 10)
+    materialfour = new THREE.MeshBasicMaterial({shading: THREE.FlatShading, map: mapfour, side: THREE.DoubleSide, transparent: true, opacity: 1})
+    meshfour = new THREE.Mesh(geometryfour, materialfour)
+    mapfour.wrapS = mapfour.wrapT = THREE.RepeatWrapping
+    mapfour.repeat.set( 1, 1 )
+    meshfour.position.z = 5
+    meshfour.position.y = -10
+    meshfour.position.x = -1
+    scene.add meshfour
+    
+    panorama.add meshfour
+    
+    viewer.add panorama
+    
+    
+
+    viewer.addUpdateCallback ->
+        mesh.rotation.y += 0.01
+        meshtwo.rotation.y += 0.01
+        meshthree.rotation.y += 0.01
+        renderer.render scene, camera
+        return
+        
+        
+    # Game Logic
+    
+    
+    thisID = 0
+    turn_active = false
+    $ ->
+        $("#text_turn").html("It's not your turn!")
+        
+        console.log "WEBSOCKET SET-UP"
+        
+        socket = new WebSocket(Rails.configuration.x.local_url)
+        
+        socket.onopen = ->
+            console.log "Connection opened"
+            socket.send("Ping")
+            return
+        socket.onerror = (error) ->
+            console.log "WebSocket Error " + error
+            return
+        socket.send2 = (iClient, iReceiver, iMove, iText) ->
+            communication =
+                senderID: iClient
+                receiverID: iReceiver
+                move: iMove     
+                    # Idea: Type of message
+                    # Options: message, turn_start, turn_end, kingdom_scan, ?
+                text: iText     
+                    # Idea: Content of message
+                    # Options: Text as string, for kingdom_scan it would be the image data
+            socket.send JSON.stringify(communication)
+            console.log "Sent: " + JSON.stringify(communication)
+            return
+
+        socket.onmessage = (e) ->
+            console.log "Received: " + e.data
+            if e.data.includes("deviceID") and thisID == 0
+                communication = JSON.parse(e.data)
+                thisID = communication.deviceID
+                console.log "New device has received ID: " + thisID
+            else if e.data.includes("senderID")
+                communication = JSON.parse(e.data)
+                console.log "Message from " + communication.senderID
+                if communication.senderID == "server"
+                    console.log communication.receiverID + " " + thisID
+                    if communication.move == "id_check"
+                        socket.send2(thisID, "server", "id_check", thisID)
+                    if communication.move == "id_keep" and communication.receiverID == thisID
+                        thisID = communication.text
+                        console.log "Reassigned old ID: " + thisID
+                        socket.send2(thisID, "server", "start_game")
+                    if communication.move == "ping"
+                        socket.send2(thisID, "server", "ping")
+                    else if communication.move == "turn_start" and communication.receiverID == thisID
+                        turn_active = true
+                        $("#text_turn").html("It's your turn!")
+                        
+            return 
+            
+        $("butt").click ->
+            console.log('hello')
+            if turn_active
+                window.location.href = "/game/lose";
+            return

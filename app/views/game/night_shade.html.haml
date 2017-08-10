@@ -1,0 +1,173 @@
+
+%body
+    %h1 Try formula
+    %h3#kingdoms Candy, Leaf, Fish, Tech, Space, Wizard
+    %input.input#userInput1{:type => "number", :value => "0"}
+    %input.input#userInput2{:type => "number", :value => "0"}
+    %input.input#userInput3{:type => "number", :value => "0"}
+    %h3#answer ...
+    %button.btn#testData Test Data
+    %button#btn_end End Turn 
+    
+#touchpad
+    #drop-square
+        %h2 DROP ME!
+    #dropzone1.dropzone
+        %h2 DROPZONE1
+    #dropzone2.dropzone
+        %h2 DROPZONE2
+    
+:scss
+    $touchpad-bg: desaturate(cyan, 70%);
+    $touch-square: lighten($touchpad-bg, 70%);
+    #touchpad{
+        height: 100%;
+        width: 100%;
+        color: white;
+        font-family: Avenir, sans-serif;
+        font-size: 4em;
+        text-align: center;
+        background: darken($touchpad-bg, 20%);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: row;
+        #drop-square{
+            width: 150px;
+            height: 150px;
+            border-radius: 5px;
+            background: $touch-square;
+            color: darken($touchpad-bg, 60%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: row;
+            h2{
+                font-size: 22px;
+            }
+        }
+        #dropzone1{
+            width: 300px;
+            height: 300px;
+            background: lighten(desaturate(cyan, 70%), 40%);
+        }
+        #dropzone2{
+            width: 300px;
+            height: 400px;
+            background: lighten(desaturate(cyan, 50%), 20%);
+            
+        }
+        .dropzone{
+            margin: 10px;
+            color: darken($touchpad-bg, 60%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: row;
+            h2{
+                font-size: 22px;
+            }
+        }
+    }
+    
+    #back-button{
+        position: absolute;
+        z-index: 100;
+        top: 15px;
+        left: 15px;
+    }
+    
+:coffeescript
+    
+    thisID = 0
+    userData = [0,0,0]
+    secForm = [0,0,0]
+    
+    $ ->
+        
+        console.log "WEBSOCKET SET-UP"
+        
+        socket = new WebSocket(Rails.configuration.x.local_url)
+        
+        socket.onopen = ->
+            console.log "Connection opened"
+            socket.send("Ping")
+            return
+        socket.onerror = (error) ->
+            console.log "WebSocket Error " + error
+            return
+        socket.send2 = (iClient, iReceiver, iMove, iText) ->
+            communication =
+                senderID: iClient
+                receiverID: iReceiver
+                move: iMove     
+                    # Idea: Type of message
+                    # Options: message, turn_start, turn_end, kingdom_scan, ?
+                text: iText     
+                    # Idea: Content of message
+                    # Options: Text as string, for kingdom_scan it would be the image data
+            socket.send JSON.stringify(communication)
+            console.log "Sent: " + JSON.stringify(communication)
+            return
+
+        socket.onmessage = (e) ->
+            console.log "Received: " + e.data
+            if e.data.includes("deviceID") and thisID == 0
+                communication = JSON.parse(e.data)
+                thisID = communication.deviceID
+                console.log "New device has received ID: " + thisID
+                socket.send2(thisID, "server", "get_gamedata")
+            else if e.data.includes("senderID")
+                communication = JSON.parse(e.data)
+                console.log "Message from " + communication.senderID
+                if communication.senderID == "server" 
+                    if communication.move == "id_check"
+                        socket.send2(thisID, "server", "id_check", thisID)
+                    if communication.move == "id_keep" and communication.receiverID == thisID
+                        thisID = communication.text
+                        console.log "Reassigned old ID: " + thisID
+                    if communication.move == "gamedata" and communication.receiverID == thisID
+                        gamedata = communication.text.split(',')
+                        $("#kingdoms").html(gamedata[0] + ',' + gamedata[1] + ',' + gamedata[2])
+                        secForm[0] = gamedata[3]
+                        secForm[1] = gamedata[4]
+                        secForm[2] = gamedata[5]
+                        console.log "Reassigned old ID: " + thisID
+                    if communication.move == "ping"
+                        socket.send2(thisID, "server", "ping")
+            return 
+        
+        $("#testData").click -> 
+            $("#answer").html("Correct!")
+            userData[0] = $("#userInput1")[0].value
+            userData[1] = $("#userInput2")[0].value
+            userData[2] = $("#userInput3")[0].value
+            for i in [0..2]
+                if userData[i] - secForm[i] != 0
+                    $("#answer").html("Incorrect!")
+        
+        $("#btn_end").click ->
+            socket.send2(thisID, "server", "turn_end", "")
+            window.location.href = "/game/treasure_map";
+        
+        console.warn "IS JQUERYUI DROPPABLE INSTALLED?", $(window).droppable
+        
+        $("#drop-square").draggable({
+            revert: "invalid" 
+        })
+        
+        $("#dropzone1").droppable({
+            accept: "#drop-square"
+            over: (event, ui) ->
+                $(ui.draggable).css("background", "#F4B0B0")
+            drop: (event, ui) ->
+                $(ui.draggable).css("background", "#571818")
+        })
+        
+        $("#dropzone2").droppable({
+            accept: "#drop-square"
+            over: (event, ui) ->
+                $(ui.draggable).css("background", "#B0C2F4")
+            drop: (event, ui) ->
+                $(ui.draggable).css("background", "#0B0B54")
+        })

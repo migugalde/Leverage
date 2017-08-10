@@ -1,0 +1,185 @@
+!!!
+%html
+  %head
+    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+    %link{:href => "//fonts.googleapis.com/css?family=Pirata+One", :rel=> "stylesheet", :type => "text/css"}/
+  
+  %h3 ..
+  %button#btn_back Back
+
+  %a{"data-title" => "Awesome Button", :href => "#"}
+
+:coffeescript
+
+  thisID = 0
+  $ ->
+    $("#text_turn").html("It's not your turn!")
+        
+    console.log "WEBSOCKET SET-UP"
+        
+    socket = new WebSocket(Rails.configuration.x.local_url)
+        
+    socket.onopen = ->
+      console.log "Connection opened"
+      socket.send("Ping")
+      return
+    socket.onerror = (error) ->
+      console.log "WebSocket Error " + error
+      return
+    socket.send2 = (iClient, iReceiver, iMove, iText) ->
+      communication =
+        senderID: iClient
+        receiverID: iReceiver
+        move: iMove     
+          # Idea: Type of message
+          # Options: message, turn_start, turn_end, kingdom_scan, ?
+        text: iText     
+          # Idea: Content of message
+          # Options: Text as string, for kingdom_scan it would be the image data
+      socket.send JSON.stringify(communication)
+      console.log "Sent: " + JSON.stringify(communication)
+      return
+
+    socket.onmessage = (e) ->
+      console.log "Received: " + e.data
+      if e.data.includes("deviceID") and thisID == 0
+        communication = JSON.parse(e.data)
+        thisID = communication.deviceID
+        console.log "New device has received ID: " + thisID
+      else if e.data.includes("senderID")
+        communication = JSON.parse(e.data)
+        console.log "Message from " + communication.senderID
+        if communication.senderID == "server"
+          console.log communication.receiverID + " " + thisID
+          if communication.move == "id_check"
+            socket.send2(thisID, "server", "id_check", thisID)
+          else if communication.move == "id_keep" and communication.receiverID == thisID
+            thisID = communication.text
+            console.log "Reassigned old ID: " + thisID
+          else if communication.move == "ping"
+            socket.send2(thisID, "server", "ping")
+      return
+      
+    $("#btn_back").click ->
+      window.location.href = "/game/index";
+
+
+:babel
+  const docStyle = document.documentElement.style
+  const aElem = document.querySelector('a')
+  const boundingClientRect = aElem.getBoundingClientRect()
+  
+  aElem.onmousemove = function(e) {
+  
+  	const x = e.clientX - boundingClientRect.left
+  	const y = e.clientY - boundingClientRect.top
+  	
+  	const xc = boundingClientRect.width/2
+  	const yc = boundingClientRect.height/2
+  	
+  	const dx = x - xc
+  	const dy = y - yc
+  	
+  	docStyle.setProperty('--rx', `${ dy/-1 }deg`)
+  	docStyle.setProperty('--ry', `${ dx/10 }deg`)
+  	
+  }
+  
+  aElem.onmouseleave = function(e) {
+  	
+  	docStyle.setProperty('--ty', '0')
+  	docStyle.setProperty('--rx', '0')
+  	docStyle.setProperty('--ry', '0')
+  	
+  }
+  
+  aElem.onmousedown = function(e) {
+  	
+  	docStyle.setProperty('--tz', '-25px')
+  	
+  }
+  
+  document.body.onmouseup = function(e) {
+  	
+  	docStyle.setProperty('--tz', '-12px')
+  	
+  }
+      
+
+:scss
+    
+  body {
+    margin: 0;
+    padding: 0;
+    background-image: url("/assets/back2.png");
+    background-position: 0px -30px;
+    color: white;
+    font-family: 'PT Sans', sans-serif;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: relative;
+    top: -30px;
+  }
+  
+  
+  #btn_back{
+    z-index: 100
+  }
+
+  a {
+  	position: relative;
+  	display: inline-block;
+  	padding: 1.2em 2em;
+  	text-decoration: none;
+  	text-align: center;
+  	cursor: pointer;
+  	user-select: none;
+  	color: white;
+  	
+  	&::before {
+  		content: '';
+  		position: absolute;
+  		top: 0;
+  		left: 0;
+  		bottom: 0;
+  		right: 0;
+  		background: linear-gradient(135deg, #6e8efb, #a777e3);
+  		border-radius: 4px;
+  		transition: box-shadow .5s ease, transform .2s ease; 
+  		will-change: transform;
+  		box-shadow: 0 2px 5px rgba(0, 0, 0, .2);
+  		transform:
+  			translateY(var(--ty, 0))
+  			rotateX(var(--rx, 0))
+  			rotateY(var(--ry, 0))
+  			translateZ(var(--tz, -12px));
+  	}
+  	
+  	&:hover::before {
+  		box-shadow: 0 5px 15px rgba(0, 0, 0, .3);
+  	}
+  	
+  	&::after {
+  		position: relative;
+  		display: inline-block;
+  		content: attr(data-title);
+  		transition: transform .2s ease; 
+  		font-weight: bold;
+  		letter-spacing: .01em;
+  		will-change: transform;
+  		transform:
+  			translateY(var(--ty, 0))
+  			rotateX(var(--rx, 0))
+  			rotateY(var(--ry, 0));
+  	}
+  }
+  
+  body {
+  	display: flex;
+  	align-items: center;
+  	justify-content: center;
+  	height: 100vh;
+  	transform-style: preserve-3d;
+  	transform: perspective(800px);
+  }
+    

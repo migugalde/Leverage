@@ -65,4 +65,16 @@ class GameController < ApplicationController
   def server
   end
   
+  def manual
+  end
+  
+  def players
+  end
+  
+  def characters
+  end
+  
+  def success
+  end
+  
 end

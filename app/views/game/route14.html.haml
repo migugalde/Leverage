@@ -4,7 +4,7 @@
     %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
     %link{:href => "//fonts.googleapis.com/css?family=Pirata+One", :rel=> "stylesheet", :type => "text/css"}/
 
-
+%butt#button KINGDOM
 
 .wrapper
   %input#view{:name => "view", :style => "display:none;", :type => "checkbox"}/
@@ -188,7 +188,100 @@
       background-position: center; 
         
     }
+    
+    #button {
+      font-family: 'Tangerine', serif;
+
+      text-align: center;
+      justify-content: center;
+      align-items: center;
+      display: inline-block;
+      
+      box-sizing: border-box;
+      padding: 8px;
+      width: 60%;
+      height: 14%;
+      
+      border-radius: 4px;
+      color: #ff912d;
+      text-shadow: -3px 3px 0 #7c7872, 0 0px #929090, 2px 0 #929090, 0 0px #929090;
+      text-decoration: none;
+      letter-spacing: 8px;
+      transition: all 0.3s ease-out;
+      font-size: 98%;
+      
+      -webkit-text-stroke-width: 1px;
+      -webkit-text-stroke-color: #96420a;
+      
+      font-weight: 700;
+      
+      position: absolute;
+      top: -335px;
+      left: 85px;
+      z-index: 999;
+    }
    
+:coffeescript
+  $("butt").click ->
+    console.log('hello')
+    window.location.href = "/game/kingdom";
+    return
+
+
+  # Basic communication
+    
+  thisID = 0
+  $ ->
+    $("#text_turn").html("It's not your turn!")
+        
+    console.log "WEBSOCKET SET-UP"
+        
+    socket = new WebSocket(Rails.configuration.x.local_url)
+        
+    socket.onopen = ->
+      console.log "Connection opened"
+      socket.send("Ping")
+      return
+    socket.onerror = (error) ->
+      console.log "WebSocket Error " + error
+      return
+    socket.send2 = (iClient, iReceiver, iMove, iText) ->
+      communication =
+        senderID: iClient
+        receiverID: iReceiver
+        move: iMove     
+          # Idea: Type of message
+          # Options: message, turn_start, turn_end, kingdom_scan, ?
+        text: iText     
+          # Idea: Content of message
+          # Options: Text as string, for kingdom_scan it would be the image data
+      socket.send JSON.stringify(communication)
+      console.log "Sent: " + JSON.stringify(communication)
+      return
+
+    socket.onmessage = (e) ->
+      console.log "Received: " + e.data
+      if e.data.includes("deviceID") and thisID == 0
+        communication = JSON.parse(e.data)
+        thisID = communication.deviceID
+        console.log "New device has received ID: " + thisID
+      else if e.data.includes("senderID")
+        communication = JSON.parse(e.data)
+        console.log "Message from " + communication.senderID
+        if communication.senderID == "server"
+          console.log communication.receiverID + " " + thisID
+          if communication.move == "id_check"
+            socket.send2(thisID, "server", "id_check", thisID)
+          else if communication.move == "id_keep" and communication.receiverID == thisID
+            thisID = communication.text
+            console.log "Reassigned old ID: " + thisID
+          else if communication.move == "ping"
+            socket.send2(thisID, "server", "ping")
+      return
+
+
+
+
 :javascript
   function readURL(input) {
     if (input.files && input.files[0]) {
