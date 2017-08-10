@@ -9,17 +9,18 @@
     .frame
   .row
     %h5 ...
+    %h5#warning Send at your own risk! Others may be notified via sound of your message. Make sure it's worth it.
   .row
     %form.message_form{"accept-charset" => "UTF-8", :action => "/game/treasure_map", :method => "get"}
       %label{:for => "message"}
-      %input#message_player{:name => "character", :placeholder => "character", :type => "text"}
-      %input#message_content{:name => "message_content", :placeholder => "message here", :type => "text"}/
-      %input#submit_message{:name => "commit", :type => "submit", :value => "submit"}
-    %button#btn_back Back
+      %input#message_player{:name => "character", :placeholder => "Character to Send To", :type => "text"}
+      %input#message_content{:name => "message_content", :placeholder => "Your Secret Message", :type => "text"}/
+      %input#submit_message.button.expanded{:name => "commit", :type => "submit", :value => "submit"}
+    // %button#btn_back Back
     %input#cb.cb{:name => "cb", :type => "checkbox"}
-    %label.button{:for => "cb"}
-      %span.front send
-      %span.back done
+    // %label.button{:for => "cb"}
+    //   %span.front send
+    //   %span.back done
 
 :coffeescript
     # Basic communication
@@ -103,7 +104,35 @@
         position: relative;
         top: -30px;
     }
+    #warning {
+        color: #663333;
+        font-family: 'Pirata One';
+        width: 240px;
+        margin: 0 auto;
+        margin-top: 200px;
+    }
+    #submit_message {
+        font-size: 2em;
+        margin-left: -140px;
+        margin-top: -80px;
+        opacity: 0;
+    }
     
+    input[type=text] {
+        border: none;
+        border-bottom: 1px dashed #663333;
+        background-color: transparent;
+        animation: all 0.6s ease-in-out;
+        transition: all 0.6s ease-in-out;
+        box-shadow:none;
+    }
+    
+    input[type=text]:focus {
+        border: none;
+        border-bottom: 1px dashed #993333;
+        background-color: transparent;
+        box-shadow:none;
+    }
     
     .frame {
         position: absolute;
@@ -182,5 +211,7 @@
     .message_form {
         width: 50%;
         z-index: 100;
+        margin: 0 auto;
+        margin-top: 30px;
     }
       
