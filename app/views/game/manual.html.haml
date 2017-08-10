@@ -12,7 +12,7 @@
   #container
     .button-main
       .button-inside
-        %h1 BACK
+        %h1#butt BACK
 
 
 
@@ -24,7 +24,7 @@
         
     console.log "WEBSOCKET SET-UP"
         
-    socket = new WebSocket(Rails.configuration.x.local_url)
+    socket = new WebSocket('wss://irisyon-finalproj-irisyon.c9users.io:8081')
         
     socket.onopen = ->
       console.log "Connection opened"
@@ -70,7 +70,6 @@
     $("#btn_back").click ->
       window.location.href = "/game/index";
 
-
 :css
   body {
   	margin: 0;
@@ -83,7 +82,7 @@
   }
   
   .button-main {
-  	width: 5em;
+  	width: 10em;
   	height: 5em;
   	background-color: #999;
   	background-image: linear-gradient(180deg, #CCC, #999);
@@ -124,8 +123,8 @@
   }
   
   .button-inside {
-  	width: 4em;
-  	height: 4em;
+  	width: 8em;
+  	height: 3.5em;
   	margin: .5em auto;
   	border-radius: .8em;
   	background-color: #CCC;
@@ -135,12 +134,12 @@
   }
   
   h1 {
-  	font-family: Arial, Helvetica, sans-serif;
-  	font-size: 3em;
+  	font-family: Tangerine, sans-serif;
+  	font-size: 30px;
   	color: #F2F2F2;
   	text-align: center;
   	line-height: 1.3em;
-  	margin: 0 auto;
+  	margin-top: 5px;
   	text-shadow: -.01em .01em 0 #666,
   				 -.02em .02em 0 #666,
   				 -.03em .03em 0 #666,

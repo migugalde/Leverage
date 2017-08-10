@@ -206,13 +206,13 @@
         
         console.log "WEBSOCKET SET-UP"
         
-        socket = new WebSocket(Rails.configuration.x.local_url)
+        socket = new WebSocket('wss://irisyon-finalproj-irisyon.c9users.io:8081')
         
         socket.onopen = ->
             console.log "Connection opened"
             socket.send("Ping")
             return
-        socket.onerror = (error) ->
+        socket.onerror = (error)
             console.log "WebSocket Error " + error
             return
         socket.send2 = (iClient, iReceiver, iMove, iText) ->

@@ -24,7 +24,7 @@
     game_started = false
     form = [0,0,0]
     kingdoms = ["Candy", "Leaf", "Fish", "Tech", "Space", "Wizard"]
-    socket = new WebSocket(Rails.configuration.x.local_url)
+    socket = new WebSocket('wss://irisyon-finalproj-irisyon.c9users.io:8081')
     $ ->
         console.log "WEBSOCKET SET-UP"
         
