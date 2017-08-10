@@ -4,7 +4,11 @@
       
       console.log "WEBSOCKET SET-UP"
         
+<<<<<<< HEAD
       socket = new WebSocket(Rails.configuration.x.local_url)
+=======
+      socket = new WebSocket('wss://finalproject-wiesn.c9users.io:8081')
+>>>>>>> a6b27f54fc23d1e325913246e3d68c0d69958cc1
         
       socket.onopen = ->
         console.log "Connection opened"
@@ -36,6 +40,7 @@
         else if e.data.includes("senderID")
           communication = JSON.parse(e.data)
           console.log "Message from " + communication.senderID
+<<<<<<< HEAD
           if communication.senderID == "server"
             console.log communication.receiverID + " " + thisID
             if communication.move == "id_check"
@@ -45,6 +50,15 @@
                 console.log "Reassigned old ID: " + thisID
             if communication.move == "ping"
                 socket.send2(thisID, "server", "ping")
+=======
+          if communication.senderID == "server" 
+            if communication.move == "id_check"
+              socket.send2(thisID, "server", "id_check", thisID)
+            if communication.move == "id_keep" and communication.receiverID == thisID
+              thisID = communication.text
+              console.log "Reassigned old ID: " + thisID
+          return 
+>>>>>>> a6b27f54fc23d1e325913246e3d68c0d69958cc1
       
       
       

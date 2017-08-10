@@ -30,7 +30,11 @@
         
         console.log "WEBSOCKET SET-UP"
         
+<<<<<<< HEAD
         socket = new WebSocket(Rails.configuration.x.local_url)
+=======
+        socket = new WebSocket('wss://finalproject-wiesn.c9users.io:8081')
+>>>>>>> a6b27f54fc23d1e325913246e3d68c0d69958cc1
         
         socket.onopen = ->
             console.log "Connection opened"
@@ -66,12 +70,21 @@
                     console.log communication.receiverID + " " + thisID
                     if communication.move == "id_check"
                         socket.send2(thisID, "server", "id_check", thisID)
+<<<<<<< HEAD
                     else if communication.move == "id_keep" and communication.receiverID == thisID
                         thisID = communication.text
                         console.log "Reassigned old ID: " + thisID
                     else if communication.move == "ping"
                         socket.send2(thisID, "server", "ping")
             return  
+=======
+                    if communication.move == "id_keep" and communication.receiverID == thisID
+                        thisID = communication.text
+                        console.log "Reassigned old ID: " + thisID
+                    else if communication.move == "turn_start" and communication.receiverID == thisID
+                        window.location.href = "/game/board"
+            return 
+>>>>>>> a6b27f54fc23d1e325913246e3d68c0d69958cc1
 
         $("#btn_send").click ->
             message_content = $("#text_content").html()
