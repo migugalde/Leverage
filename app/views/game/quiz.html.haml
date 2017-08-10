@@ -82,8 +82,8 @@
         $("#question").html(questions[Math.floor(Math.random()*questions.length)])
         
         $("#btn_continue").click ->
-            window.location.href = "/game/board";
+            window.location.href = "/game/board"
         
         $("#btn_end").click ->
             socket.send2(thisID, "server", "turn_end", "")
-            window.location.href = "/game/treasure_map";
+            window.location.href = "/game/treasure_map"

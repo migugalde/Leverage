@@ -1,5 +1,9 @@
-!!!
+%body
+#container
+  .button-main
+    .button-inside#butt
 
+!!!
 %html
   %head
     %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
@@ -8,6 +12,10 @@
   %h3#kingdoms Game data goes here
   %button#btn_back Back
 :coffeescript
+
+  $("#butt").click ->
+    console.log("HERE")
+    window.location.href = "/game/index"
   # Basic communication
   
   thisID = 0
@@ -87,4 +95,95 @@
     top: -30px;
   }
     
+    
+  .button-main {
+  	width: 6em;
+  	height: 6em;
+  	background-color: rgba(165, 104, 11, 0.5);
+  	background-image: linear-gradient(180deg, #a5680b, #999);
+  	background: transparent;
+  	border-top: 3px solid #CCC;
+  	border-right: 3px solid #CCC;
+  	border-left: 4px solid #666;
+  	border-bottom: 4px solid #666;
+  	border-radius: 50%;
+  	float: left;
+  	margin-left: 142px;
+  	margin-top: 500px;
+  	text-decoration: none;
+  	box-shadow:  -.1em .1em 0 #000,
+  				 -.2em .2em 0 #000,
+  				 -.3em .3em 0 #000,
+  				 -.04em .04em 0 #333,
+  				 -.01em .05em 0 #333,
+  				 -0.06em .6em 0 #333,
+  				 -0.07em .7em 30px #333,
+  				 -.1em .9em 20px #333,
+  				 -0.5em 1em 30px #333,
+  				 -0.1em 0.05em 30px #333,
+  				 -0.1em .06em 300px #333;
+  	transition: box-shadow 0.3s,
+  				border-top 0.3s,
+  				border-right 0.3s;
+  	font-family: 'Pirata One';
+  	background-image: url("/assets/swordsGrey-128.png");
+  	background-size: cover;
+  	background-repeat: no-repeat;
+
+  }
+  
+  .button-main:hover, .button-main:focus {
+  	box-shadow: .1em -.1em 0 #333,
+  				.2em -.2em 0 #333,
+  				-.1em .1em 0 #333,
+  				-.2em .2em 0 #333,
+  				-.3em .3em 0 #333,
+  				inset -.1em -.1em 2em #FFF,
+  				-.1em -.1em 2em #666;
+  	border-top: 3px solid #666;
+  	border-right: 3px solid #666;
+  }
+  
+  .button-inside {
+  	width: 5em;
+  	height: 4.5em;
+  	margin: .5em auto;
+  	border-radius: 50%;
+  	background-color: rgba(188, 130, 43, .4);
+  	background-image: linear-gradient(45deg, #bc822b, #999);
+    background: transparent;
+  	box-shadow: inset -.15em .15em 0 #666,
+  				inset .1em -.1em 0 #CCC;
+  }
+  
+  here {
+    
+  	font-family: 'Pirata One';
+  	font-size: 25px;
+  	color: #F2F2F2;
+  	text-align: center;
+  	line-height: 1.3em;
+  	margin-top: 5px;
+  	text-shadow: -.01em .01em 0 #666,
+  				 -.02em .02em 0 #666,
+  				 -.03em .03em 0 #666,
+  				 -.04em .04em 0 #666,
+  				 -.05em .05em 0 #666,
+  				 -.06em .06em 0 #999,
+  				 -.07em .07em 0 #999,
+  				 -.08em .08em 0 #999,
+  				 -.09em .09em 0 #999,
+  				 -.1em .1em 0 #999,
+  				 -.11em .11em 0 #999;
+    color: #ff912d;
+    text-shadow: -3px 3px 0 #7c7872, 0 0px #929090, 2px 0 #929090, 0 0px #929090;
+    text-decoration: none;
+    letter-spacing: 8px;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: #913605;
+    
+    font-weight: 700;
+    opacity: 0.8;
+  }
+
 

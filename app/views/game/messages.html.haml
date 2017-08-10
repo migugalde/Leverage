@@ -4,11 +4,16 @@
     %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
     %link{:href => "//fonts.googleapis.com/css?family=Pirata+One", :rel=> "stylesheet", :type => "text/css"}/
 
-  %container
+  .container
+    .row 
+      %h2 ..
     .row
-      %h1 ..
-    .row
-      %button#btn_back Back
+      %form{"accept-charset" => "UTF-8", :action => "/game/treasure_map", :method => "get"}
+      %label{:for => "message"}
+      %input#message_player{:name => "character", :placeholder => "character", :type => "text"}
+      %input#message_content{:name => "message_content", :placeholder => "message here", :type => "text"}/
+      %input#submit_message{:name => "commit", :type => "submit", :value => "submit"}
+    %button#btn_back Back
 
 :coffeescript
   $ ->
@@ -44,8 +49,22 @@
                 console.log "Message from " + communication.senderID
                 if communication.receiverID == "player2"
                   $("#text_content").html(communication.text)
-            return 
+            return
+            
+        $("#submit_message").click ->
+            console.log "Message Sent"
+            iReceiver = $("#message_player").val()
+            console.log iReceiver
+            iText  = $("#message_content").val()
+            console.log iText
+            socket.send2(thisID, iReceiver, "message", iText)
+            socket.send2(thisID, "server", "turn_end", "")
+            window.location.href = "/game/treasure_map"
+            return
         
+        $("#btn_back").click ->
+            window.location.href = "/game/index";
+            return
         
 
 :scss

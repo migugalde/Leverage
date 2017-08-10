@@ -1,11 +1,17 @@
+%body
+#container
+  .button-main
+    .button-inside#butt
+
 !!!
 %html
   %head
     %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
     %link{:href => "//fonts.googleapis.com/css?family=Pirata+One", :rel=> "stylesheet", :type => "text/css"}/
   
-  %h3 ..
-  %button#btn_back Back
+  %h3.text#chartype
+  %h4.text#chardescr Loading your character...
+  %label#charimg{:for => "view"}
 
 
 :coffeescript
@@ -13,6 +19,15 @@
   # Basic communication
     
   thisID = 0
+  kingdoms = ["Candy", "Leaf", "Fish", "Tech", "Space", "Wizard"]
+  char1 = "Candies are really popular amongst all kingdoms. They spread joy and happiness."
+  char2 = "The Leaves are ancient and wise people. They like to share their knowledge."
+  char3 = "Fish tend to optimize everything they can. Speed and performance are important to them."
+  char4 = "The inhabitants of the Tech kingdom are practical oriented. They quickly solve problems."
+  char5 = "The futuristic looking Spaces usually come up with a vision they want to share."
+  char6 = "Wizards are known to always make a scene. It never gets boring with them."
+  char_descriptions = [char1, char2, char3, char4, char5, char6]
+  
   $ ->
     $("#text_turn").html("It's not your turn!")
         
@@ -57,11 +72,18 @@
           else if communication.move == "id_keep" and communication.receiverID == thisID
             thisID = communication.text
             console.log "Reassigned old ID: " + thisID
+            socket.send2(thisID, "server", "get_character")
+          else if communication.move == "get_character" and communication.receiverID == thisID
+            $("#chartype").html(communication.text)
+            $("#chardescr").html(char_descriptions[kingdoms.indexOf(communication.text)])
+            image_source = "/assets/char_" + communication.text + ".png"
+            # console.log image_source
+            $("#charimg").css("background-image", "url(" + image_source + ")")
           else if communication.move == "ping"
             socket.send2(thisID, "server", "ping")
       return
       
-    $("#btn_back").click ->
+    $("#butt").click ->
       window.location.href = "/game/index";
       
       
@@ -73,9 +95,147 @@
       background-image: url("/assets/back2.png");
       background-position: 0px -30px;
       color: white;
-      font-family: 'PT Sans', sans-serif;
+      font-family: 'Pirata One';
       background-repeat: no-repeat;
       background-size: cover;
       position: relative;
-      top: -30px;
+      /* top: 30px; */
     }
+    
+    #charimg {
+      background-color: rgba(112, 104, 99, .2);
+      margin: 0 auto;
+      margin-top: 30px;
+      font-size: 32px;
+      
+      transition: 0.15s ease-in-out;
+      cursor: pointer;
+      user-select: none;
+      animation: shakeIt 1s ease-in-out 0s infinite alternate-reverse;
+      box-shadow: -2px 12px 16px rgba(0,0,0,0.5);
+
+      border: 10px solid rgba(112, 104, 99, .7);
+      border-radius: 50%;
+      
+      
+      background-image: url("/assets/icon.png");
+      width: 150px;
+      height: 150px;
+      
+      background-size: cover;
+      background-repeat: no-repeat;
+      &:hover {
+        box-shadow: 0px 2px 0px rgba(0, 0, 0, 0.25);
+      }
+    }
+    
+    
+    .text{
+      position: absolute;
+      font-family: 'Pirata One';
+      z-index: 999;
+      color: #593333;
+    }
+    
+    #chartype{
+      top: 160px;
+      left: 20vw;
+      width: 50%;
+      font-size: 32px;
+    }
+    
+    #chardescr{
+      top: 35vh;
+      left: 20vw;
+      width: 60%;
+      font-size: 27px;
+      text-align: center;
+    }
+    
+    .button-main {
+  	width: 6em;
+  	height: 6em;
+  	background-color: rgba(165, 104, 11, 0.5);
+  	background-image: linear-gradient(180deg, #a5680b, #999);
+  	background: transparent;
+  	border-top: 3px solid #CCC;
+  	border-right: 3px solid #CCC;
+  	border-left: 4px solid #666;
+  	border-bottom: 4px solid #666;
+  	border-radius: 50%;
+  	float: left;
+  	margin-left: 37vw;
+  	margin-top: 500px;
+  	text-decoration: none;
+  	box-shadow:  -.1em .1em 0 #000,
+  				 -.2em .2em 0 #000,
+  				 -.3em .3em 0 #000,
+  				 -.04em .04em 0 #333,
+  				 -.01em .05em 0 #333,
+  				 -0.06em .6em 0 #333,
+  				 -0.07em .7em 30px #333,
+  				 -.1em .9em 20px #333,
+  				 -0.5em 1em 30px #333,
+  				 -0.1em 0.05em 30px #333,
+  				 -0.1em .06em 300px #333;
+  	transition: box-shadow 0.3s,
+  				border-top 0.3s,
+  				border-right 0.3s;
+  	font-family: 'Pirata One';
+  	background-image: url("/assets/swordsGrey-128.png");
+  	background-size: cover;
+  	background-repeat: no-repeat;
+  }
+  
+  .button-main:hover, .button-main:focus {
+  	box-shadow: .1em -.1em 0 #333,
+  				.2em -.2em 0 #333,
+  				-.1em .1em 0 #333,
+  				-.2em .2em 0 #333,
+  				-.3em .3em 0 #333,
+  				inset -.1em -.1em 2em #FFF,
+  				-.1em -.1em 2em #666;
+  	border-top: 3px solid #666;
+  	border-right: 3px solid #666;
+  }
+  
+  .button-inside {
+  	width: 5em;
+  	height: 4.5em;
+  	margin: .5em auto;
+  	border-radius: 50%;
+  	background-color: rgba(188, 130, 43, .4);
+  	background-image: linear-gradient(45deg, #bc822b, #999);
+    background: transparent;
+  	box-shadow: inset -.15em .15em 0 #666,
+  				inset .1em -.1em 0 #CCC;
+  }
+  
+  here {
+  	font-family: 'Pirata One';
+  	font-size: 25px;
+  	color: #F2F2F2;
+  	text-align: center;
+  	line-height: 1.3em;
+  	margin-top: 5px;
+  	text-shadow: -.01em .01em 0 #666,
+  				 -.02em .02em 0 #666,
+  				 -.03em .03em 0 #666,
+  				 -.04em .04em 0 #666,
+  				 -.05em .05em 0 #666,
+  				 -.06em .06em 0 #999,
+  				 -.07em .07em 0 #999,
+  				 -.08em .08em 0 #999,
+  				 -.09em .09em 0 #999,
+  				 -.1em .1em 0 #999,
+  				 -.11em .11em 0 #999;
+    color: #ff912d;
+    text-shadow: -3px 3px 0 #7c7872, 0 0px #929090, 2px 0 #929090, 0 0px #929090;
+    text-decoration: none;
+    letter-spacing: 8px;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: #913605;
+    
+    font-weight: 700;
+    opacity: 0.8;
+  }

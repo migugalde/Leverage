@@ -3,23 +3,23 @@
   %head
     %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
     %link{:href => "//fonts.googleapis.com/css?family=Pirata+One", :rel=> "stylesheet", :type => "text/css"}/
- 
-.frame
-  %input#cb.cb{:name => "cb", :type => "checkbox"}
-  %label.button{:for => "cb"}
-    %span.front send
-    %span.back done
 
 .container
-  .row 
-    %h2 ..
   .row
-    %form{"accept-charset" => "UTF-8", :action => "/game/messages", :method => "get"}
+    .frame
+  .row
+    %h5 ...
+  .row
+    %form.message_form{"accept-charset" => "UTF-8", :action => "/game/treasure_map", :method => "get"}
       %label{:for => "message"}
+      %input#message_player{:name => "character", :placeholder => "character", :type => "text"}
       %input#message_content{:name => "message_content", :placeholder => "message here", :type => "text"}/
-      %input{:name => "commit", :type => "submit", :value => "Search"}
-// .row.text-center
-//   %button#btn_send.text-center Send Message
+      %input#submit_message{:name => "commit", :type => "submit", :value => "submit"}
+    %button#btn_back Back
+    %input#cb.cb{:name => "cb", :type => "checkbox"}
+    %label.button{:for => "cb"}
+      %span.front send
+      %span.back done
 
 :coffeescript
     # Basic communication
@@ -66,25 +66,27 @@
                     console.log communication.receiverID + " " + thisID
                     if communication.move == "id_check"
                         socket.send2(thisID, "server", "id_check", thisID)
-<<<<<<< HEAD
                     else if communication.move == "id_keep" and communication.receiverID == thisID
                         thisID = communication.text
                         console.log "Reassigned old ID: " + thisID
                     else if communication.move == "ping"
                         socket.send2(thisID, "server", "ping")
             return  
-=======
-                    if communication.move == "id_keep" and communication.receiverID == thisID
-                        thisID = communication.text
-                        console.log "Reassigned old ID: " + thisID
-                    else if communication.move == "turn_start" and communication.receiverID == thisID
-                        window.location.href = "/game/board"
-            return 
->>>>>>> a6b27f54fc23d1e325913246e3d68c0d69958cc1
 
         $("#btn_send").click ->
             message_content = $("#text_content").html()
             socket.send2(thisID, "player2", "message", message_content)
+            return
+            
+        $("#submit_message").click ->
+            console.log "Message Sent"
+            iReceiver = $("#message_player").val()
+            console.log iReceiver
+            iText  = $("#message_content").val()
+            console.log iText
+            socket.send2(thisID, iReceiver, "message", iText)
+            socket.send2(thisID, "server", "turn_end", "")
+            window.location.href = "/game/treasure_map"
             return
 
 
@@ -120,6 +122,7 @@
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
         perspective: 150px;
+        z-index: -1;
     }
     
     .cb {
@@ -175,5 +178,9 @@
     	transform: rotateX(180deg);
     	box-shadow: 4px -8px 12px 0 rgba(0,0,0,0.1);
     }
-        
+    
+    .message_form {
+        width: 50%;
+        z-index: 100;
+    }
       

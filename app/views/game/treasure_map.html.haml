@@ -1,21 +1,21 @@
-
-%butt#button EXPLORE
-
-#container
-    #bg
-    
-
-#panel
-
-#paneltwo
-
-
-!!!
 %html
     %head
         %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
         %link{:href => "//fonts.googleapis.com/css?family=Pirata+One", :rel=> "stylesheet", :type => "text/css"}/
+%body
+
+    %butt#button EXPLORE
+    %h1#message
     
+    #container
+        #bg
+        
+    
+    #panel
+    
+    #paneltwo
+    
+    %audio#audio{:autostart => "false", :src => "http://www.soundjay.com/button/beep-07.wav"}
 
 
 :css
@@ -31,7 +31,6 @@
         width: 100%;
         height: 100%;
         background: transparent;
-
     }
         
     #bg {
@@ -48,8 +47,6 @@
         width: 200px;
         height: 200px;
         background: transparent;
-        
-        
     }
     
     #paneltwo {
@@ -90,6 +87,12 @@
         top: 57px;
         left: 85px;
         z-index: 999;
+    }
+    
+    #message{
+        display: inline-block;
+        position: absolute
+        z-index: 998;
     }
 
       
@@ -187,7 +190,6 @@
     viewer.add panorama
     
     
-
     viewer.addUpdateCallback ->
         mesh.rotation.y += 0.01
         meshtwo.rotation.y += 0.01
@@ -201,6 +203,8 @@
     
     thisID = 0
     turn_active = false
+    stored_message = ""
+    chance_array = [1, 0, 0, 0, 1, 0, 0, 0, 1, 0]
     $ ->
         $("#text_turn").html("It's not your turn!")
         
@@ -212,7 +216,7 @@
             console.log "Connection opened"
             socket.send("Ping")
             return
-        socket.onerror = (error)
+        socket.onerror = (error) ->
             console.log "WebSocket Error " + error
             return
         socket.send2 = (iClient, iReceiver, iMove, iText) ->
@@ -238,6 +242,7 @@
             else if e.data.includes("senderID")
                 communication = JSON.parse(e.data)
                 console.log "Message from " + communication.senderID
+                console.log 
                 if communication.senderID == "server"
                     console.log communication.receiverID + " " + thisID
                     if communication.move == "id_check"
@@ -248,6 +253,10 @@
                         socket.send2(thisID, "server", "start_game")
                     if communication.move == "ping"
                         socket.send2(thisID, "server", "ping")
+                    if communication.move == "message" && communication.receiverID == thisID
+                        $('h1').html("YOU HAVE A MESSAGE")
+                        console.log "WE GOT INTO THE SETTING SECTION"
+                        stored_message = communication.text
                     else if communication.move == "turn_start" and communication.receiverID == thisID
                         turn_active = true
                         $("#text_turn").html("It's your turn!")
@@ -257,5 +266,19 @@
         $("butt").click ->
             console.log('hello')
             if turn_active
-                window.location.href = "/game/lose";
+                window.location.href = "/game/lose"
             return
+            
+        $("h1").click ->
+            console.log "THE MESSAGE : ",  stored_message
+            $("h1").html(stored_message)
+            sound = document.getElementById('audio')
+            sound.loop = true;
+            sound.play()
+            if chance_array[Math.floor(Math.random()*chance_array.length)] == 1
+                console.log "IT HAPPENED*************"
+                i = 0
+                while i < 6
+                    sound.play()
+                    i++
+            stored_message = ""

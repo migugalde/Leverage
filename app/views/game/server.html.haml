@@ -74,12 +74,22 @@
                     else if communication.move == "get_gamedata"
                         gamedata = kingdoms[0] + "," + kingdoms[1] + "," + kingdoms[2] + "," + form[0] + "," + form[1] + "," + form[2]
                         socket.send2("server", communication.senderID, "gamedata", gamedata)
+                    else if communication.move == "get_character"
+                        socket.send2("server", communication.senderID, "get_character", kingdoms[id_array.indexOf(communication.senderID)])
                     else if communication.move == "start_game"
                         if not game_started
                             if turn_array[id_array.indexOf(communication.senderID)] == 1
                                 socket.send2("server", communication.senderID, "turn_start", "")
                 else
-                    output_text = communication.text
+                    console.log communication.receiverID
+                    reciever = id_array[kingdoms.indexOf(communication.receiverID)]
+                    console.log "ARE YOU IN THE KINGDOMS (FIND ME IN SERVER):", reciever
+                    if reciever
+                        reciever = reciever
+                        console.log "I AM GOING TO RECIEVE A MESSAGE (FIND ME IN SERVER):", reciever
+                        socket.send2("server", reciever, "message", communication.text)
+                    else if e.data.includes("senderID")
+                        output_text = communication.text
                 $("#outputString").html("Output to " + communication.receiverID + ": " + output_text)
             return 
         

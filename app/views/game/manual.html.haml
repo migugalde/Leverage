@@ -1,23 +1,22 @@
+
+
+#image
+
+%body 
+
+#container
+  .button-main
+    .button-inside#butt
 !!!
 %html
   %head
     %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
-    %link{:href => "//fonts.googleapis.com/css?family=Pirata+One", :rel=> "stylesheet", :type => "text/css"}/
-  
-  %h3 ..
-  %button#btn_back Back
-
-  
-  %body
-  #container
-    .button-main
-      .button-inside
-        %h1#butt BACK
-
-
+    %link{:href => "https://fonts.googleapis.com/css?family=Pirata One", :rel => "stylesheet"}/
 
 :coffeescript
-
+  $("#butt").click ->
+    console.log("HERE")
+    window.location.href = "/game/index"
   thisID = 0
   $ ->
     $("#text_turn").html("It's not your turn!")
@@ -67,47 +66,57 @@
             socket.send2(thisID, "server", "ping")
       return
       
-    $("#btn_back").click ->
-      window.location.href = "/game/index";
-
+    
+    
 :css
   body {
   	margin: 0;
   	background-color: #404040;
+  	font-family: 'Pirata One';
   }
   
   #container {
-  	width: 35em;
+  	width: 25em;
   	margin: 3em auto;
+  	font-family: 'Pirata One';
+    z-index: 99;
   }
   
+  
   .button-main {
-  	width: 10em;
-  	height: 5em;
-  	background-color: #999;
-  	background-image: linear-gradient(180deg, #CCC, #999);
+  	width: 6em;
+  	height: 6em;
+  	background-color: rgba(165, 104, 11, 0.5);
+  	background-image: linear-gradient(180deg, #a5680b, #999);
+  	background: transparent;
   	border-top: 3px solid #CCC;
   	border-right: 3px solid #CCC;
   	border-left: 4px solid #666;
   	border-bottom: 4px solid #666;
-  	border-radius: 1em;
+  	border-radius: 50%;
   	float: left;
-  	margin: 3em;
+  	margin-left: 142px;
+  	margin-top: 430px;
   	text-decoration: none;
   	box-shadow:  -.1em .1em 0 #000,
   				 -.2em .2em 0 #000,
   				 -.3em .3em 0 #000,
-  				 -.4em .4em 0 #333,
-  				 -.5em .5em 0 #333,
-  				 -.6em .6em 0 #333,
-  				 -.7em .7em 0 #333,
-  				 -.9em .9em 0 #333,
-  				 -1em 1em 0 #333,
-  				 -1.1em 1.1em 0 #333,
-  				 -1.2em 1.2em 0 #333;
+  				 -.04em .04em 0 #333,
+  				 -.01em .05em 0 #333,
+  				 -0.06em .6em 0 #333,
+  				 -0.07em .7em 30px #333,
+  				 -.1em .9em 20px #333,
+  				 -0.5em 1em 30px #333,
+  				 -0.1em 0.05em 30px #333,
+  				 -0.1em .06em 300px #333;
   	transition: box-shadow 0.3s,
   				border-top 0.3s,
   				border-right 0.3s;
+  	font-family: 'Pirata One';
+  	background-image: url("/assets/swordsGrey-128.png");
+  	background-size: cover;
+  	background-repeat: no-repeat;
+
   }
   
   .button-main:hover, .button-main:focus {
@@ -123,19 +132,21 @@
   }
   
   .button-inside {
-  	width: 8em;
-  	height: 3.5em;
+  	width: 5em;
+  	height: 4.5em;
   	margin: .5em auto;
-  	border-radius: .8em;
-  	background-color: #CCC;
-  	background-image: linear-gradient(45deg, #CCC, #999);
+  	border-radius: 50%;
+  	background-color: rgba(188, 130, 43, .4);
+  	background-image: linear-gradient(45deg, #bc822b, #999);
+    background: transparent;
   	box-shadow: inset -.15em .15em 0 #666,
   				inset .1em -.1em 0 #CCC;
   }
   
-  h1 {
-  	font-family: Tangerine, sans-serif;
-  	font-size: 30px;
+  here {
+    
+  	font-family: 'Pirata One';
+  	font-size: 25px;
   	color: #F2F2F2;
   	text-align: center;
   	line-height: 1.3em;
@@ -151,6 +162,15 @@
   				 -.09em .09em 0 #999,
   				 -.1em .1em 0 #999,
   				 -.11em .11em 0 #999;
+    color: #ff912d;
+    text-shadow: -3px 3px 0 #7c7872, 0 0px #929090, 2px 0 #929090, 0 0px #929090;
+    text-decoration: none;
+    letter-spacing: 8px;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: #913605;
+    
+    font-weight: 700;
+    opacity: 0.8;
   }
 
 
@@ -162,18 +182,36 @@
     background-image: url("/assets/back2.png");
     background-position: 0px -30px;
     color: white;
-    font-family: 'PT Sans', sans-serif;
+  	font-family: 'Pirata One';
     background-repeat: no-repeat;
     background-size: cover;
     position: relative;
     top: -30px;
   }
   
+  #contain {
+    width: 100%;
+    height: 100%;
+    
+  }
   
   #btn_back{
     z-index: 100
   }
 
+  #image {
+    width: 350px;
+    height: 350px;
+    background-image: url("/assets/manual.png");
+    background-size: cover;
+    position: absolute;
+    
+    background-position: right;
+    margin-left: 50px;
+    max-height: 100vh;
+    overflow-y: auto;
+  }
+  
   a {
   	position: relative;
   	display: inline-block;
@@ -192,6 +230,7 @@
   		bottom: 0;
   		right: 0;
   		background: linear-gradient(135deg, #6e8efb, #a777e3);
+  		background: transparent;
   		border-radius: 4px;
   		transition: box-shadow .5s ease, transform .2s ease; 
   		will-change: transform;
